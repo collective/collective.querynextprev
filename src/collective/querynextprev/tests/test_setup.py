@@ -17,12 +17,13 @@ class TestSetup(unittest.TestCase):
         self.installer = api.portal.get_tool('portal_quickinstaller')
 
     def test_product_installed(self):
-        """Test if collective.querynextprev is installed with portal_quickinstaller."""
-        self.assertTrue(self.installer.isProductInstalled('collective.querynextprev'))
+        """Test if collective.querynextprev is installed with portal_quickinstaller."""  # noqa
+        self.assertTrue(
+            self.installer.isProductInstalled('collective.querynextprev'))
 
     def test_browserlayer(self):
         """Test that ICollectiveQuerynextprevLayer is registered."""
-        from collective.querynextprev.interfaces import ICollectiveQuerynextprevLayer
+        from collective.querynextprev.interfaces import ICollectiveQuerynextprevLayer  # noqa
         from plone.browserlayer import utils
         self.assertIn(ICollectiveQuerynextprevLayer, utils.registered_layers())
 
@@ -38,4 +39,5 @@ class TestUninstall(unittest.TestCase):
 
     def test_product_uninstalled(self):
         """Test if collective.querynextprev is cleanly uninstalled."""
-        self.assertFalse(self.installer.isProductInstalled('collective.querynextprev'))
+        self.assertFalse(
+            self.installer.isProductInstalled('collective.querynextprev'))

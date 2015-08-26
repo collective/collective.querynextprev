@@ -57,7 +57,6 @@ class TestViews(unittest.TestCase):
         l2 = [0, 1, 2]
         self.assertIsNone(view.find_item(l2, l1.index(0), [0]))
 
-
         l1 = [0, 1, 2]
         l2 = []
         self.assertIsNone(view.find_item(l2, l1.index(0), [0]))

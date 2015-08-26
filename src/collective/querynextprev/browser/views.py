@@ -13,19 +13,19 @@ class GoToItem(BrowserView):
 
     """Base class for GoToPreviousItem/GoToNextItem."""
 
-    def find_item(self, new_uids, context_index, context_uid):  #pylint: disable=W0613
+    def find_item(self, new_uids, context_index, context_uid):  # noqa # pylint: disable=W0613
         """Override this method."""
         return NotImplemented
 
     def __call__(self):
         session = self.request.SESSION
-        if session.has_key(QUERY) and session.has_key(UIDS):
+        if session.has_key(QUERY) and session.has_key(UIDS):  # noqa
             uids = json.loads(session[UIDS])
             params = json.loads(session[QUERY])
 
             # reexecute the query to search within most recent results
             catalog = api.portal.get_tool('portal_catalog')
-            new_uids = [brain.UID for brain in catalog.searchResults(**params)]  #pylint: disable=E1103
+            new_uids = [brain.UID for brain in catalog.searchResults(**params)]  # noqa #pylint: disable=E1103
 
             # search UID starting from context index in uids
             context_uid = self.context.UID()
@@ -42,7 +42,7 @@ class GoToItem(BrowserView):
                     self.request.response.redirect(next_url)
                     return  # don't expire cookies
 
-        if session.has_key(SEARCH_URL):
+        if session.has_key(SEARCH_URL):  # noqa
             self.request.response.redirect(session[SEARCH_URL])
         else:
             self.request.response.redirect(api.portal.get().absolute_url())
