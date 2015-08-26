@@ -59,6 +59,8 @@ class GoToPreviousItem(GoToItem):
         """Find previous item in list starting from index."""
         if index < 0:
             return None
+        elif index >= len(items):
+            return None
         elif items[index] not in excluded:
             return items[index]
         else:
@@ -71,7 +73,9 @@ class GoToNextItem(GoToItem):
 
     def find_item(self, items, index, excluded):
         """Find next item in list starting from index."""
-        if index >= len(items):
+        if index < 0:
+            return None
+        elif index >= len(items):
             return None
         elif items[index] not in excluded:
             return items[index]
