@@ -5,7 +5,7 @@ import unittest2 as unittest
 from plone import api
 from plone.app.testing import login, setRoles, TEST_USER_ID, TEST_USER_NAME
 
-from collective.querynextprev import QUERY, SEARCH_URL, PREVIOUS_UIDS, NEXT_UIDS
+from collective.querynextprev import QUERY, SEARCH_URL, PREVIOUS_UIDS, NEXT_UIDS  # noqa #pylint: disable=C0301
 from collective.querynextprev.browser.viewlets import NextPrevNavigationViewlet
 from collective.querynextprev.tests import query, DummyView
 from collective.querynextprev.testing import COLLECTIVE_QUERYNEXTPREV_INTEGRATION_TESTING  # noqa #pylint: disable=C0301
