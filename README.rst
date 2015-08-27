@@ -2,6 +2,14 @@
 collective.querynextprev
 ==============================================================================
 
+.. image:: https://secure.travis-ci.org/collective/collective.querynextprev.png
+    :target: http://travis-ci.org/collective/collective.querynextprev
+
+.. image:: https://coveralls.io/repos/collective/collective.querynextprev/badge.png?branch=master
+    :alt: Coveralls badge
+    :target: https://coveralls.io/r/collective/collective.querynextprev
+
+
 This package adds next/previous buttons that allow you to navigate through your query results.
 
 Out of the box, it works with `eea.facetednavigation <https://github.com/collective/eea.facetednavigation>`__ queries (requires ``eea.facetednavigation`` > 8.2).
