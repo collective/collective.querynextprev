@@ -5,7 +5,7 @@ import json
 from Products.Five.browser import BrowserView
 from plone import api
 
-from collective.querynextprev import QUERY, SEARCH_URL, NEXT_UIDS, PREVIOUS_UIDS
+from collective.querynextprev import QUERY, SEARCH_URL, NEXT_UIDS, PREVIOUS_UIDS  # noqa #pylint: disable=C0301
 from collective.querynextprev.utils import (
     expire_session_data, first_common_item, get_previous_items, get_next_items)
 

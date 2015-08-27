@@ -138,4 +138,3 @@ class TestNextPrevNavigationViewlet(unittest.TestCase):
             ['mydoc-51', 'mydoc-52', 'mydoc-53', 'mydoc-54', 'mydoc-55',
              'mydoc-56', 'mydoc-57', 'mydoc-58', 'mydoc-59', 'mydoc-60']
             )
-
