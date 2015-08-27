@@ -5,79 +5,65 @@ import json
 from Products.Five.browser import BrowserView
 from plone import api
 
-from collective.querynextprev import QUERY, UIDS, SEARCH_URL
-from collective.querynextprev.utils import expire_session_data
+from collective.querynextprev import QUERY, SEARCH_URL, NEXT_UIDS, PREVIOUS_UIDS
+from collective.querynextprev.utils import (
+    expire_session_data, first_common_item, get_previous_items, get_next_items)
 
 
-class GoToItem(BrowserView):
+class GoToNextItem(BrowserView):
 
-    """Base class for GoToPreviousItem/GoToNextItem."""
+    """Redirect to next item in query."""
 
-    def find_item(self, new_uids, context_index, context_uid):  # noqa # pylint: disable=W0613
-        """Override this method."""
-        return NotImplemented
+    uids_param = NEXT_UIDS
+
+    def get_uids(self):
+        """Get uids of the query results."""
+        catalog = api.portal.get_tool('portal_catalog')
+        params = json.loads(self.request.SESSION[QUERY])
+        return [brain.UID for brain in catalog.searchResults(**params)]  # noqa #pylint: disable=E1103
 
     def __call__(self):
-        session = self.request.SESSION
-        if session.has_key(QUERY) and session.has_key(UIDS):  # noqa
-            uids = json.loads(session[UIDS])
-            params = json.loads(session[QUERY])
+        request = self.request
+        session = request.SESSION
+        if session.has_key(QUERY) and session.has_key(self.uids_param):  # noqa
+            next_uids = json.loads(session[self.uids_param])
 
             # reexecute the query to search within most recent results
-            catalog = api.portal.get_tool('portal_catalog')
-            new_uids = [brain.UID for brain in catalog.searchResults(**params)]  # noqa #pylint: disable=E1103
+            new_uids = self.get_uids()
 
             # search UID starting from context index in uids
-            context_uid = self.context.UID()
-            if context_uid in uids:
-                context_index = uids.index(context_uid)
-                uid = self.find_item(new_uids, context_index, [context_uid])
+            uid = first_common_item(next_uids, new_uids)
+            if uid is not None:
+                next_url = api.content.get(UID=uid).absolute_url()
 
-                if uid is not None:
-                    next_url = api.content.get(UID=uid).absolute_url()
+                # update uids in session
+                context_index = new_uids.index(self.context.UID())
+                previous_uids = list(reversed(
+                    get_previous_items(new_uids, context_index)))
+                next_uids = get_next_items(new_uids, context_index)
+                session[PREVIOUS_UIDS] = json.dumps(previous_uids)
+                session[NEXT_UIDS] = json.dumps(next_uids)
 
-                    # update cookie
-                    session[UIDS] = json.dumps(new_uids)
-
-                    self.request.response.redirect(next_url)
-                    return  # don't expire cookies
+                request.response.redirect(next_url)
+                return  # don't expire session data
 
         if session.has_key(SEARCH_URL):  # noqa
-            self.request.response.redirect(session[SEARCH_URL])
+            request.response.redirect(session[SEARCH_URL])
         else:
-            self.request.response.redirect(api.portal.get().absolute_url())
+            request.response.redirect(api.portal.get().absolute_url())
 
-        expire_session_data(self.request)
+        expire_session_data(request)
         return
 
 
-class GoToPreviousItem(GoToItem):
+class GoToPreviousItem(GoToNextItem):
 
-    """Go to previous item."""
+    """Redirect to previous item in query."""
 
-    def find_item(self, items, index, excluded):
-        """Find previous item in list starting from index."""
-        if index < 0:
-            return None
-        elif index >= len(items):
-            return None
-        elif items[index] not in excluded:
-            return items[index]
-        else:
-            return self.find_item(items, index - 1, excluded)
+    uids_param = PREVIOUS_UIDS
 
-
-class GoToNextItem(GoToItem):
-
-    """Go to next item."""
-
-    def find_item(self, items, index, excluded):
-        """Find next item in list starting from index."""
-        if index < 0:
-            return None
-        elif index >= len(items):
-            return None
-        elif items[index] not in excluded:
-            return items[index]
-        else:
-            return self.find_item(items, index + 1, excluded)
+    def get_uids(self):
+        """Reverse uids."""
+        uids = super(GoToPreviousItem, self).get_uids()
+        uids.reverse()
+        return uids

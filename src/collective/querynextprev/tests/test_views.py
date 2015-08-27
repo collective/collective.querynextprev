@@ -1,66 +1,176 @@
 # -*- coding: utf-8 -*-
 """Test views."""
+import json
 import unittest2 as unittest
 
 from plone import api
+from plone.app.testing import login, setRoles, TEST_USER_ID, TEST_USER_NAME
 
+from collective.querynextprev import QUERY, SEARCH_URL, NEXT_UIDS, PREVIOUS_UIDS
+from collective.querynextprev.browser.views import GoToNextItem, GoToPreviousItem  # noqa #pylint: disable=C0301
+from collective.querynextprev.tests import query
 from collective.querynextprev.testing import COLLECTIVE_QUERYNEXTPREV_INTEGRATION_TESTING  # noqa #pylint: disable=C0301
-from collective.querynextprev.browser.views import GoToNextItem
-from collective.querynextprev.browser.views import GoToPreviousItem
 
 
-class DummyView(object):
-    pass
+class TestGoToNextItem(unittest.TestCase):
 
-
-class TestViews(unittest.TestCase):
-
-    """Test views."""
+    """Test GoToNextItem view."""
 
     layer = COLLECTIVE_QUERYNEXTPREV_INTEGRATION_TESTING
 
-    def test_find_next_item(self):
-        """Test find_item for GoToNextItem view."""
+    def setUp(self):
         portal = api.portal.get()
-        view = GoToNextItem(portal, DummyView())
+        setRoles(portal, TEST_USER_ID, ['Manager'])
+        login(portal, TEST_USER_NAME)
+        for x in range(30):
+            name = "mydoc-{}".format(x + 1)
+            api.content.create(id=name, type='Document', container=portal)
 
-        l1 = [0, 1, 2, 3, 4, 5]
-        l2 = [0, 1, 4, 5]
-        self.assertEqual(view.find_item(l2, l1.index(2), [2]), 4)
+        self.doc1 = portal['mydoc-1']
+        self.doc2 = portal['mydoc-2']
+        self.doc3 = portal['mydoc-3']
+        self.doc11 = portal['mydoc-11']
+        self.doc30 = portal['mydoc-30']
+        self.portal = portal
 
-        l1 = [0, 1, 2, 3, 4, 5]
-        l2 = [0, 1, 2, 3, 4, 5]
-        self.assertEqual(view.find_item(l2, l1.index(2), [2]), 3)
+    def test_get_uids(self):
+        """Test get_uids method."""
+        request = self.portal.REQUEST
+        request.SESSION = {
+            QUERY: query,
+        }
+        context = self.portal
+        view = GoToNextItem(context, request)
+        uids = view.get_uids()
+        self.assertEqual(len(uids), 30)
+        self.assertEqual(uids[0], self.doc1.UID())
+        self.assertEqual(uids[10], self.doc11.UID())
+        self.assertEqual(uids[29], self.doc30.UID())
 
-        l1 = [0, 1, 2, 3, 4, 5, 6, 7, 8, 9]
-        l2 = [0, 1, 2, 3, 4, 5]
-        self.assertIsNone(view.find_item(l2, l1.index(5), [5]))
+    def test_view(self):
+        doc1 = self.doc1
+        doc2 = self.doc2
+        doc3 = self.doc3
+        portal = self.portal
+        request = portal.REQUEST
 
-        l1 = [0, 1, 2, 3, 4, 5, 6]
-        l2 = [0, 1, 2, 3, 4, 5, 6]
-        self.assertEqual(view.find_item(l2, l1.index(5), [5]), 6)
+        # no query, no search url
+        request.SESSION = {}
+        view = GoToNextItem(doc1, request)
+        view()
+        self.assertEqual(
+            request.response.getHeader('location'),
+            portal.absolute_url()
+            )
 
-    def test_find_previous_item(self):
-        """Test find_item for GoToPreviousItem view."""
+        # no search url
+        request.SESSION = {
+            SEARCH_URL: 'http://www.example.com'
+            }
+        view = GoToNextItem(doc1, request)
+        view()
+        self.assertEqual(
+            request.response.getHeader('location'),
+            'http://www.example.com'
+            )
+
+        # with a query
+        request.SESSION = {
+            QUERY: query,
+            PREVIOUS_UIDS: json.dumps([]),
+            NEXT_UIDS: json.dumps([doc2.UID(), doc3.UID()]),
+            SEARCH_URL: 'http://www.example.com'
+            }
+        view = GoToNextItem(doc1, request)
+        view()
+        self.assertEqual(
+            request.response.getHeader('location'),
+            doc2.absolute_url()
+            )
+
+        # with a query, first next item deleted
+        request.SESSION = {
+            QUERY: query,
+            PREVIOUS_UIDS: json.dumps([]),
+            NEXT_UIDS: json.dumps([doc2.UID(), doc3.UID()]),
+            SEARCH_URL: 'http://www.example.com'
+            }
+        view = GoToNextItem(doc1, request)
+        api.content.delete(doc2)
+        view()
+        self.assertEqual(
+            request.response.getHeader('location'),
+            doc3.absolute_url()
+            )
+
+
+class TestGoToPreviousItem(unittest.TestCase):
+
+    """Test GoToPreviousItem view."""
+
+    layer = COLLECTIVE_QUERYNEXTPREV_INTEGRATION_TESTING
+
+    def setUp(self):
         portal = api.portal.get()
-        view = GoToPreviousItem(portal, DummyView())
+        setRoles(portal, TEST_USER_ID, ['Manager'])
+        login(portal, TEST_USER_NAME)
+        for x in range(30):
+            name = "mydoc-{}".format(x + 1)
+            api.content.create(id=name, type='Document', container=portal)
 
-        l1 = [0, 1, 2, 3, 4, 5]
-        l2 = [0, 2, 2, 3, 4, 5]
-        self.assertEqual(view.find_item(l2, l1.index(2), [2]), 0)
+        self.doc1 = portal['mydoc-1']
+        self.doc2 = portal['mydoc-2']
+        self.doc3 = portal['mydoc-3']
+        self.doc20 = portal['mydoc-20']
+        self.doc30 = portal['mydoc-30']
+        self.portal = portal
 
-        l1 = [0, 1, 2, 3, 4, 5]
-        l2 = [0, 1, 2, 3, 4, 5]
-        self.assertEqual(view.find_item(l2, l1.index(2), [2]), 1)
+    def test_get_uids(self):
+        """Test get_uids method."""
+        request = self.portal.REQUEST
+        request.SESSION = {
+            QUERY: query,
+        }
+        context = self.portal
+        view = GoToPreviousItem(context, request)
+        uids = view.get_uids()
+        self.assertEqual(len(uids), 30)
+        self.assertEqual(uids[0], self.doc30.UID())
+        self.assertEqual(uids[10], self.doc20.UID())
+        self.assertEqual(uids[29], self.doc1.UID())
 
-        l1 = [0, 1, 2]
-        l2 = [0, 1, 2]
-        self.assertIsNone(view.find_item(l2, l1.index(0), [0]))
+    def test_view(self):
+        doc1 = self.doc1
+        doc2 = self.doc2
+        doc3 = self.doc3
+        portal = self.portal
+        request = portal.REQUEST
 
-        l1 = [0, 1, 2]
-        l2 = []
-        self.assertIsNone(view.find_item(l2, l1.index(0), [0]))
+        # with a query
+        request.SESSION = {
+            QUERY: query,
+            PREVIOUS_UIDS: json.dumps([doc2.UID(), doc1.UID()]),
+            NEXT_UIDS: json.dumps([]),
+            SEARCH_URL: 'http://www.example.com'
+            }
+        view = GoToPreviousItem(doc3, request)
+        view()
+        self.assertEqual(
+            request.response.getHeader('location'),
+            doc2.absolute_url()
+            )
 
-        l1 = [0, 1, 2, 3, 4, 5, 6]
-        l2 = [0, 1, 2, 3, 4, 5, 6]
-        self.assertEqual(view.find_item(l2, l1.index(5), [5]), 4)
+        # with a query, first next item deleted
+        request.SESSION = {
+            QUERY: query,
+            PREVIOUS_UIDS: json.dumps([doc1.UID()]),
+            NEXT_UIDS: json.dumps([]),
+            SEARCH_URL: 'http://www.example.com'
+            }
+        api.content.delete(doc1)
+        view = GoToPreviousItem(doc2, request)
+        view()
+        self.assertEqual(
+            request.response.getHeader('location'),
+            'http://www.example.com'
+            )
