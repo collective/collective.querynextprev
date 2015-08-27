@@ -9,6 +9,7 @@ def expire_session_data(request):
         if key.startswith('querynextprev'):
             del request.SESSION[key]
 
+
 def first_common_item(l1, l2):
     """Get first item in l2 that is also in l1."""
     for item in l2:
