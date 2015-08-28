@@ -19,13 +19,19 @@ def first_common_item(l1, l2):
     return None
 
 
-def get_next_items(l, index):
+def get_next_items(l, index, include_index=False):
     """Get WINDOW_SIZE next items."""
     last_index = min(index + WINDOW_SIZE, len(l))
+    if include_index:
+        index -= 1
+
     return l[index+1:last_index+1]
 
 
-def get_previous_items(l, index):
+def get_previous_items(l, index, include_index=False):
     """Get WINDOW_SIZE previous items."""
     first_index = max(index - 10, 0)
+    if include_index:
+        index += 1
+
     return l[first_index:index]

@@ -37,10 +37,10 @@ class GoToNextItem(BrowserView):
                 next_url = api.content.get(UID=uid).absolute_url()
 
                 # update uids in session
-                context_index = new_uids.index(self.context.UID())
+                index = new_uids.index(uid)
                 previous_uids = list(reversed(
-                    get_previous_items(new_uids, context_index)))
-                next_uids = get_next_items(new_uids, context_index)
+                    get_previous_items(new_uids, index)))
+                next_uids = get_next_items(new_uids, index)
                 session[PREVIOUS_UIDS] = json.dumps(previous_uids)
                 session[NEXT_UIDS] = json.dumps(next_uids)
 
