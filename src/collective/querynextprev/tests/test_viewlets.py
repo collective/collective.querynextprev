@@ -158,9 +158,9 @@ class TestNextPrevNavigationViewlet(unittest.TestCase):
                 type='Document', container=portal)
             docs.append(doc)
 
-        old_previous_uids = list(reversed([doc.UID() for doc in docs[:5]]))
-        old_next_uids = [doc.UID() for doc in docs[8:]]
+        old_previous_uids = list(reversed([doc.UID() for doc in docs[:5]]))  # noqa #pylint: disable=C0301
         session[PREVIOUS_UIDS] = json.dumps(old_previous_uids)
+        old_next_uids = [doc.UID() for doc in docs[8:]]
         session[NEXT_UIDS] = json.dumps(old_next_uids)
         viewlet = NextPrevNavigationViewlet(self.doc, request, self.view)
         viewlet.update()
