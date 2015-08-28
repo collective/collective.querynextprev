@@ -39,14 +39,13 @@ class NextPrevNavigationViewlet(ViewletBase):  # noqa #pylint: disable=W0223
                 # context is not in results anymore
                 # get previous
                 old_previous = json.loads(session[PREVIOUS_UIDS])
-                next_item = first_common_item(uids, old_previous)
-                if next_item:
+                previous_item = first_common_item(uids, old_previous)
+                if previous_item:
                     self.is_navigable = True
-                    index = uids.index(next_item)
+                    index = uids.index(previous_item)
                     self.previous_uids = list(reversed(
                         get_previous_items(uids, index, include_index=True)))
                     session[PREVIOUS_UIDS] = json.dumps(self.previous_uids)
-                    return  # don't delete session data
 
                 # get next
                 old_next = json.loads(session[NEXT_UIDS])
@@ -57,6 +56,8 @@ class NextPrevNavigationViewlet(ViewletBase):  # noqa #pylint: disable=W0223
                     self.next_uids = get_next_items(
                         uids, index, include_index=True)
                     session[NEXT_UIDS] = json.dumps(self.next_uids)
+
+                if previous_item or next_item:
                     return  # don't delete session data
 
             expire_session_data(self.request)

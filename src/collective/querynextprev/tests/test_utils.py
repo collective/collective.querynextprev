@@ -79,6 +79,11 @@ class TestUtils(unittest.TestCase):
             range(36, 40)
             )
 
+        self.assertEqual(
+            get_next_items(l, index, include_index=True),
+            range(35, 40)
+            )
+
     def test_get_previous_items(self):
         """Test get_previous_items function."""
         l = range(40)
@@ -92,4 +97,9 @@ class TestUtils(unittest.TestCase):
         self.assertEqual(
             get_previous_items(l, index),
             range(5)
+            )
+
+        self.assertEqual(
+            get_previous_items(l, index, include_index=True),
+            range(6)
             )

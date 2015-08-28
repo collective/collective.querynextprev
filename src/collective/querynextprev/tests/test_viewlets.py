@@ -138,3 +138,37 @@ class TestNextPrevNavigationViewlet(unittest.TestCase):
             ['mydoc-51', 'mydoc-52', 'mydoc-53', 'mydoc-54', 'mydoc-55',
              'mydoc-56', 'mydoc-57', 'mydoc-58', 'mydoc-59', 'mydoc-60']
             )
+
+    def test_context_not_in_results(self):
+        """Test the case in which context is not in the results."""
+        portal = self.portal
+        request = portal.REQUEST
+        query = json.dumps({
+            'portal_type': 'Document',
+            'sort_on': 'sortable_title',
+            'SearchableText': 'Great title'
+            })
+        session = request.SESSION
+        session[QUERY] = query
+        docs = []
+        for x in range(10):
+            name = "mydoc-{}".format(x)
+            doc = api.content.create(
+                id=name, title="Great title",
+                type='Document', container=portal)
+            docs.append(doc)
+
+        old_previous_uids = list(reversed([doc.UID() for doc in docs[:5]]))
+        old_next_uids = [doc.UID() for doc in docs[8:]]
+        session[PREVIOUS_UIDS] = json.dumps(old_previous_uids)
+        session[NEXT_UIDS] = json.dumps(old_next_uids)
+        viewlet = NextPrevNavigationViewlet(self.doc, request, self.view)
+        viewlet.update()
+        self.assertEqual(session[QUERY], query)
+        self.assertTrue(viewlet.is_navigable)
+        self.assertEqual(
+            json.loads(session[PREVIOUS_UIDS]), old_previous_uids)
+        self.assertEqual(
+            json.loads(session[NEXT_UIDS]), old_next_uids)
+        self.assertEqual(viewlet.previous_uids, old_previous_uids)
+        self.assertEqual(viewlet.next_uids, old_next_uids)
