@@ -4,11 +4,11 @@
      id="querynextprev-navigation"
      tal:condition="view/is_navigable">
 
-  <a tal:attributes="href string:${context/absolute_url}/@@go_to_previous_item" i18n:translate="">
+  <a tal:condition="view/previous_uids" tal:attributes="href string:${context/absolute_url}/@@go_to_previous_item" i18n:translate="">
     Previous
   </a>
 
-  <a tal:attributes="href string:${context/absolute_url}/@@go_to_next_item" i18n:translate="">
+  <a tal:condition="view/next_uids" tal:attributes="href string:${context/absolute_url}/@@go_to_next_item" i18n:translate="">
     Next
   </a>
 
