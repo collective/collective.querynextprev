@@ -1,5 +1,8 @@
 # -*- coding: utf-8 -*-
 """Utils."""
+import collections
+
+
 WINDOW_SIZE = 10
 
 
@@ -35,3 +38,18 @@ def get_previous_items(l, index, include_index=False):
         index += 1
 
     return l[first_index:index]
+
+
+def convert_to_str(value):
+    """Converts a value to str."""
+    # pylint: disable=W0141
+    if isinstance(value, str):
+        return value
+    if isinstance(value, unicode):
+        return str(value)
+    elif isinstance(value, collections.Mapping):
+        return dict(map(convert_to_str, value.iteritems()))
+    elif isinstance(value, collections.Iterable):
+        return type(value)(map(convert_to_str, value))
+    else:
+        return value

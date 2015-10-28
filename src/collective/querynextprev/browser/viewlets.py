@@ -7,7 +7,8 @@ from plone.app.layout.viewlets.common import ViewletBase
 
 from collective.querynextprev import QUERY, PREVIOUS_UIDS, NEXT_UIDS
 from collective.querynextprev.utils import (
-    first_common_item, get_next_items, get_previous_items, expire_session_data)
+    first_common_item, get_next_items, get_previous_items, expire_session_data,
+    convert_to_str)
 
 
 class NextPrevNavigationViewlet(ViewletBase):  # noqa #pylint: disable=W0223
@@ -23,6 +24,7 @@ class NextPrevNavigationViewlet(ViewletBase):  # noqa #pylint: disable=W0223
         if session.has_key(QUERY):  # noqa
             query = session[QUERY]
             params = json.loads(query)
+            params = convert_to_str(params)
             catalog = api.portal.get_tool('portal_catalog')
             uids = [brain.UID for brain in catalog.searchResults(**params)]  # noqa #pylint: disable=E1103
             context_uid = self.context.UID()
@@ -35,7 +37,7 @@ class NextPrevNavigationViewlet(ViewletBase):  # noqa #pylint: disable=W0223
                 session[PREVIOUS_UIDS] = json.dumps(self.previous_uids)
                 session[NEXT_UIDS] = json.dumps(self.next_uids)
                 return  # don't delete session data
-            elif session.has_key(PREVIOUS_UIDS) or session.has_key(NEXT_UIDS):  # noqa
+            elif session.has_key(PREVIOUS_UIDS) or session.has_key(NEXT_UIDS):  # noqa #pylint: disable=C0301
                 # context is not in results anymore
                 # get previous
                 old_previous = json.loads(session[PREVIOUS_UIDS])
