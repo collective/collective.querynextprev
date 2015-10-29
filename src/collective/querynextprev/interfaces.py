@@ -24,3 +24,8 @@ class IAdditionalDataProvider(Interface):
 
     def get_value(self):
         """Data that will be stored in session."""
+
+
+class INextPrevNotNavigable(Interface):
+
+    """Marker interface for contents that are not next/prev navigables."""

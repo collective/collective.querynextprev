@@ -6,6 +6,7 @@ from plone import api
 from plone.app.layout.viewlets.common import ViewletBase
 
 from collective.querynextprev import QUERY, PREVIOUS_UIDS, NEXT_UIDS
+from collective.querynextprev.interfaces import INextPrevNotNavigable
 from collective.querynextprev.utils import (
     first_common_item, get_next_items, get_previous_items, expire_session_data,
     convert_to_str)
@@ -21,10 +22,12 @@ class NextPrevNavigationViewlet(ViewletBase):  # noqa #pylint: disable=W0223
 
     def update(self):
         session = self.request.SESSION
+        if INextPrevNotNavigable.providedBy(self.context):
+            return
+
         if session.has_key(QUERY):  # noqa
             query = session[QUERY]
-            params = json.loads(query)
-            params = convert_to_str(params)
+            params = convert_to_str(json.loads(query))
             catalog = api.portal.get_tool('portal_catalog')
             uids = [brain.UID for brain in catalog.searchResults(**params)]  # noqa #pylint: disable=E1103
             context_uid = self.context.UID()
