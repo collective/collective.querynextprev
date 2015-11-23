@@ -13,6 +13,7 @@
   <browser:viewlet
       for="Products.CMFCore.interfaces.IContentish"
       view="plone.app.layout.globals.interfaces.IViewView"
+      layer="collective.querynextprev.interfaces.ICollectiveQuerynextprevLayer"
       name="collective.querynextprev.nextprevnavigation"
       class=".viewlets.NextPrevNavigationViewlet"
       manager="plone.app.layout.viewlets.interfaces.IAboveContentTitle"
