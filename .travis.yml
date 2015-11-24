@@ -15,4 +15,8 @@ after_success:
 
 notifications:
   email:
-    - cedricmessiant@ecreall.com
+    recipients:
+      - devs@imio.be
+      - travis-ci@ecreall.com
+    on_success: change
+    on_failure: change
