@@ -46,7 +46,7 @@ def convert_to_str(value):
     if isinstance(value, str):
         return value
     if isinstance(value, unicode):
-        return str(value)
+        return value.encode('utf8')
     elif isinstance(value, collections.Mapping):
         return dict(map(convert_to_str, value.iteritems()))
     elif isinstance(value, collections.Iterable):

@@ -24,7 +24,7 @@ class TestGoToNextItem(unittest.TestCase):
         login(portal, TEST_USER_NAME)
         for x in range(30):
             name = "mydoc-{}".format(x + 1)
-            api.content.create(id=name, type='Document', container=portal)
+            api.content.create(id=name, type='Document', container=portal, title='é')
 
         self.doc1 = portal['mydoc-1']
         self.doc2 = portal['mydoc-2']
