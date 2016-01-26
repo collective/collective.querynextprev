@@ -5,8 +5,8 @@ Changelog
 0.3 (unreleased)
 ----------------
 
-- Nothing changed yet.
-
+- Corrected failing tests of previous release.
+  [sgeulette]
 
 0.2 (2016-01-26)
 ----------------

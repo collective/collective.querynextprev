@@ -8,7 +8,7 @@ from plone.app.testing import login, setRoles, TEST_USER_ID, TEST_USER_NAME
 
 from collective.querynextprev import QUERY, SEARCH_URL, NEXT_UIDS, PREVIOUS_UIDS  # noqa #pylint: disable=C0301
 from collective.querynextprev.browser.views import GoToNextItem, GoToPreviousItem  # noqa #pylint: disable=C0301
-from collective.querynextprev.tests import query
+from collective.querynextprev.tests import query_utf8
 from collective.querynextprev.testing import COLLECTIVE_QUERYNEXTPREV_INTEGRATION_TESTING  # noqa #pylint: disable=C0301
 
 
@@ -23,12 +23,12 @@ class TestGoToNextItem(unittest.TestCase):
         setRoles(portal, TEST_USER_ID, ['Manager'])
         login(portal, TEST_USER_NAME)
         for x in range(30):
-            name = "mydoc-{}".format(x + 1)
+            name = "mydoc-{:02d}".format(x + 1)
             api.content.create(id=name, type='Document', container=portal, title='é')
 
-        self.doc1 = portal['mydoc-1']
-        self.doc2 = portal['mydoc-2']
-        self.doc3 = portal['mydoc-3']
+        self.doc1 = portal['mydoc-01']
+        self.doc2 = portal['mydoc-02']
+        self.doc3 = portal['mydoc-03']
         self.doc11 = portal['mydoc-11']
         self.doc30 = portal['mydoc-30']
         self.portal = portal
@@ -37,7 +37,7 @@ class TestGoToNextItem(unittest.TestCase):
         """Test get_uids method."""
         request = self.portal.REQUEST
         request.SESSION = {
-            QUERY: query,
+            QUERY: query_utf8,
         }
         context = self.portal
         view = GoToNextItem(context, request)
@@ -76,7 +76,7 @@ class TestGoToNextItem(unittest.TestCase):
 
         # with a query
         request.SESSION = {
-            QUERY: query,
+            QUERY: query_utf8,
             PREVIOUS_UIDS: json.dumps([]),
             NEXT_UIDS: json.dumps([doc2.UID(), doc3.UID()]),
             SEARCH_URL: 'http://www.example.com'
@@ -90,7 +90,7 @@ class TestGoToNextItem(unittest.TestCase):
 
         # with a query, first next item deleted
         request.SESSION = {
-            QUERY: query,
+            QUERY: query_utf8,
             PREVIOUS_UIDS: json.dumps([]),
             NEXT_UIDS: json.dumps([doc2.UID(), doc3.UID()]),
             SEARCH_URL: 'http://www.example.com'
@@ -115,12 +115,12 @@ class TestGoToPreviousItem(unittest.TestCase):
         setRoles(portal, TEST_USER_ID, ['Manager'])
         login(portal, TEST_USER_NAME)
         for x in range(30):
-            name = "mydoc-{}".format(x + 1)
-            api.content.create(id=name, type='Document', container=portal)
+            name = "mydoc-{:02d}".format(x + 1)
+            api.content.create(id=name, type='Document', container=portal, title='é')
 
-        self.doc1 = portal['mydoc-1']
-        self.doc2 = portal['mydoc-2']
-        self.doc3 = portal['mydoc-3']
+        self.doc1 = portal['mydoc-01']
+        self.doc2 = portal['mydoc-02']
+        self.doc3 = portal['mydoc-03']
         self.doc20 = portal['mydoc-20']
         self.doc30 = portal['mydoc-30']
         self.portal = portal
@@ -129,7 +129,7 @@ class TestGoToPreviousItem(unittest.TestCase):
         """Test get_uids method."""
         request = self.portal.REQUEST
         request.SESSION = {
-            QUERY: query,
+            QUERY: query_utf8,
         }
         context = self.portal
         view = GoToPreviousItem(context, request)
@@ -148,7 +148,7 @@ class TestGoToPreviousItem(unittest.TestCase):
 
         # with a query
         request.SESSION = {
-            QUERY: query,
+            QUERY: query_utf8,
             PREVIOUS_UIDS: json.dumps([doc2.UID(), doc1.UID()]),
             NEXT_UIDS: json.dumps([]),
             SEARCH_URL: 'http://www.example.com'
@@ -162,7 +162,7 @@ class TestGoToPreviousItem(unittest.TestCase):
 
         # with a query, first next item deleted
         request.SESSION = {
-            QUERY: query,
+            QUERY: query_utf8,
             PREVIOUS_UIDS: json.dumps([doc1.UID()]),
             NEXT_UIDS: json.dumps([]),
             SEARCH_URL: 'http://www.example.com'
