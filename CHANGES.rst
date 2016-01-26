@@ -2,7 +2,7 @@ Changelog
 =========
 
 
-0.3 (unreleased)
+0.3 (2016-01-26)
 ----------------
 
 - Corrected failing tests of previous release.
