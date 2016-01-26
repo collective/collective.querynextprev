@@ -2,7 +2,7 @@ Changelog
 =========
 
 
-0.2 (unreleased)
+0.2 (2016-01-26)
 ----------------
 
 - Query can contain utf-8 chars.
