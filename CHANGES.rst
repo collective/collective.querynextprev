@@ -2,7 +2,7 @@ Changelog
 =========
 
 
-0.4 (unreleased)
+0.4 (2016-05-23)
 ----------------
 
 - Add in registry a maxresults parameter to avoid rendering viewlet when query returns too many results.
