@@ -32,7 +32,7 @@ class NextPrevNavigationViewlet(ViewletBase):  # noqa #pylint: disable=W0223
             brains = catalog.searchResults(**params)
 
             # if we have too many results, we return and delete session data
-            max_res = api.portal.get_registry_record('collective.querynextprev.maxresults') or 150
+            max_res = api.portal.get_registry_record('collective.querynextprev.maxresults') or 250
             if len(brains) > max_res:
                 self.is_navigable = False
                 expire_session_data(self.request)

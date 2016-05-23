@@ -3,7 +3,10 @@
     <record name="collective.querynextprev.maxresults">
         <field type="plone.registry.field.Int">
             <title>Maximum results number</title>
-            <description>If the query results number is higher than this value, the previous/next links aren't show.</description>
+            <description>
+              If the query results number is higher than this value, the previous/next links aren't show.
+              If not set, default value is 250.
+            </description>
             <min>0</min>
         </field>
     </record>
