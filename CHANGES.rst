@@ -5,8 +5,9 @@ Changelog
 0.4 (unreleased)
 ----------------
 
-- Nothing changed yet.
-
+- Add in registry a maxresults parameter to avoid rendering viewlet when query returns too many results.
+  Performance optimization.
+  [sgeulette]
 
 0.3 (2016-01-26)
 ----------------

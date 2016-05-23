@@ -1,0 +1,11 @@
+<registry>
+
+    <record name="collective.querynextprev.maxresults">
+        <field type="plone.registry.field.Int">
+            <title>Maximum results number</title>
+            <description>If the query results number is higher than this value, the previous/next links aren't show.</description>
+            <min>0</min>
+        </field>
+    </record>
+
+</registry>

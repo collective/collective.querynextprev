@@ -50,6 +50,27 @@ class TestNextPrevNavigationViewlet(unittest.TestCase):
         self.assertNotIn(NEXT_UIDS, session)
         self.assertFalse(viewlet.is_navigable)
 
+    def test_maxresults(self):
+        portal = self.portal
+        request = portal.REQUEST
+        session = request.SESSION
+        api.content.create(id='mydoc2', type='Document', container=portal)
+        session[QUERY] = query
+        viewlet = NextPrevNavigationViewlet(self.doc, request, self.view)
+        viewlet.update()
+        self.assertIn(QUERY, session)
+        self.assertIn(PREVIOUS_UIDS, session)
+        self.assertIn(NEXT_UIDS, session)
+        self.assertTrue(viewlet.is_navigable)
+        # we set maxresults to 1
+        api.portal.set_registry_record(name='collective.querynextprev.maxresults', value=1)
+        self.assertIn(QUERY, session)
+        viewlet.update()
+        self.assertNotIn(QUERY, session)
+        self.assertNotIn(PREVIOUS_UIDS, session)
+        self.assertNotIn(NEXT_UIDS, session)
+        self.assertFalse(viewlet.is_navigable)
+
     def test_one_after(self):
         """Test when there is a next item and no previous item."""
         portal = self.portal

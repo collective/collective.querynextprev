@@ -21,15 +21,24 @@ class NextPrevNavigationViewlet(ViewletBase):  # noqa #pylint: disable=W0223
     next_uids = []
 
     def update(self):
-        session = self.request.SESSION
         if INextPrevNotNavigable.providedBy(self.context):
             return
 
+        session = self.request.SESSION
         if session.has_key(QUERY):  # noqa
             query = session[QUERY]
             params = convert_to_str(json.loads(query))
             catalog = api.portal.get_tool('portal_catalog')
-            uids = [brain.UID for brain in catalog.searchResults(**params)]  # noqa #pylint: disable=E1103
+            brains = catalog.searchResults(**params)
+
+            # if we have too many results, we return and delete session data
+            max_res = api.portal.get_registry_record('collective.querynextprev.maxresults') or 150
+            if len(brains) > max_res:
+                self.is_navigable = False
+                expire_session_data(self.request)
+                return
+
+            uids = [brain.UID for brain in brains]  # noqa #pylint: disable=E1103
             context_uid = self.context.UID()
             if context_uid in uids and len(uids) > 1:
                 self.is_navigable = True
