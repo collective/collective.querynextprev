@@ -25,7 +25,7 @@ class TestSubscribers(unittest.TestCase):
         request = portal.REQUEST
         request.SESSION = {}
         event = DummyEvent()
-        event.query = 'foobar'
+        event.query = {'k': 'foobar'}
         record_query_in_session(portal, event)
         self.assertIn(QUERY, request.SESSION)
         self.assertIn(SEARCH_URL, request.SESSION)

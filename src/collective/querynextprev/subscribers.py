@@ -8,6 +8,7 @@ from zope.globalrequest import getRequest
 
 from collective.querynextprev import QUERY, SEARCH_URL
 from collective.querynextprev.interfaces import IAdditionalDataProvider
+from collective.querynextprev.utils import clean_query
 
 
 def convert_dates(obj):
@@ -22,7 +23,7 @@ def record_query_in_session(obj, event):
     """Record catalog query in session."""
     request = getRequest()
     session = request.SESSION
-    session[QUERY] = json.dumps(event.query, default=convert_dates)
+    session[QUERY] = json.dumps(clean_query(event.query), default=convert_dates)
     session[SEARCH_URL] = request.HTTP_REFERER
     adapters = getAdapters((obj, ), IAdditionalDataProvider)
     for adapter in dict(adapters).values():

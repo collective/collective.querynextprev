@@ -53,3 +53,8 @@ def convert_to_str(value):
         return type(value)(map(convert_to_str, value))
     else:
         return value
+
+
+def clean_query(query):
+    """ Remove from eeafacetednavigation query useless keys """
+    return {k: v for k, v in query.items() if k not in ('facet.field', 'b_size', 'b_start')}

@@ -5,8 +5,8 @@ Changelog
 0.5 (unreleased)
 ----------------
 
-- Nothing changed yet.
-
+- Remove useless keys from faceted query ('facet.field', 'b_size', 'b_start').
+  [sgeulette]
 
 0.4 (2016-05-23)
 ----------------

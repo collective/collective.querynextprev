@@ -5,7 +5,7 @@ import unittest2 as unittest
 from plone import api
 
 from collective.querynextprev.utils import (
-    expire_session_data, first_common_item, get_next_items, get_previous_items)
+    expire_session_data, first_common_item, get_next_items, get_previous_items, clean_query)
 from collective.querynextprev.testing import COLLECTIVE_QUERYNEXTPREV_INTEGRATION_TESTING  # noqa #pylint: disable=C0301
 
 
@@ -34,7 +34,7 @@ class TestUtils(unittest.TestCase):
             'foo': 'bar',
             'querynextprev.foo': 'bar',
             'querynextprev.bar': 'foo',
-            }
+        }
         expire_session_data(request)
         self.assertEqual(request.SESSION, {'foo': 'bar'})
 
@@ -71,18 +71,18 @@ class TestUtils(unittest.TestCase):
         self.assertEqual(
             get_next_items(l, index),
             range(20, 30)
-            )
+        )
 
         index = 35
         self.assertEqual(
             get_next_items(l, index),
             range(36, 40)
-            )
+        )
 
         self.assertEqual(
             get_next_items(l, index, include_index=True),
             range(35, 40)
-            )
+        )
 
     def test_get_previous_items(self):
         """Test get_previous_items function."""
@@ -91,15 +91,23 @@ class TestUtils(unittest.TestCase):
         self.assertEqual(
             get_previous_items(l, index),
             range(11, 21)
-            )
+        )
 
         index = 5
         self.assertEqual(
             get_previous_items(l, index),
             range(5)
-            )
+        )
 
         self.assertEqual(
             get_previous_items(l, index, include_index=True),
             range(6)
-            )
+        )
+
+    def test_clean_query(self):
+        query = {'sort_order': 'descending', 'Language': ['fr', ''], 'sort_on': 'created',
+                 'facet.field': ['', u'review_state', u'treating_groups', u'assigned_user', u'recipient_groups',
+                                 u'mail_type'],
+                 'b_size': 24, 'b_start': 0, 'portal_type': {'query': ['dmsincomingmail']}}
+        self.assertDictEqual(clean_query(query), {'sort_order': 'descending', 'Language': ['fr', ''],
+                                                  'sort_on': 'created', 'portal_type': {'query': ['dmsincomingmail']}})
