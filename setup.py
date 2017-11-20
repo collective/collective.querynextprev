@@ -19,7 +19,7 @@ long_description = (
 
 setup(
     name='collective.querynextprev',
-    version='0.5.dev0',
+    version='0.5',
     description="Navigate through your query results using a next and a previous buttons",
     long_description=long_description,
     # Get more from http://pypi.python.org/pypi?%3Aaction=list_classifiers
@@ -33,7 +33,7 @@ setup(
         "License :: OSI Approved :: GNU General Public License v2 (GPLv2)",
     ],
     keywords='Python Plone',
-    author='Cédric Messiant',
+    author='CÃ©dric Messiant',
     author_email='cedricmessiant@ecreall.com',
     url='http://pypi.python.org/pypi/collective.querynextprev',
     license='GPL version 2',

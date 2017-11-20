@@ -2,7 +2,7 @@ Changelog
 =========
 
 
-0.5 (unreleased)
+0.5 (2017-11-20)
 ----------------
 
 - Remove useless keys from faceted query ('facet.field', 'b_size', 'b_start').
