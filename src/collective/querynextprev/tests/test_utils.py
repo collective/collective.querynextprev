@@ -66,41 +66,41 @@ class TestUtils(unittest.TestCase):
 
     def test_get_next_items(self):
         """Test get_next_items function."""
-        l = range(40)
+        lst = range(40)
         index = 19
         self.assertEqual(
-            get_next_items(l, index),
+            get_next_items(lst, index),
             range(20, 30)
         )
 
         index = 35
         self.assertEqual(
-            get_next_items(l, index),
+            get_next_items(lst, index),
             range(36, 40)
         )
 
         self.assertEqual(
-            get_next_items(l, index, include_index=True),
+            get_next_items(lst, index, include_index=True),
             range(35, 40)
         )
 
     def test_get_previous_items(self):
         """Test get_previous_items function."""
-        l = range(40)
+        lst = range(40)
         index = 21
         self.assertEqual(
-            get_previous_items(l, index),
+            get_previous_items(lst, index),
             range(11, 21)
         )
 
         index = 5
         self.assertEqual(
-            get_previous_items(l, index),
+            get_previous_items(lst, index),
             range(5)
         )
 
         self.assertEqual(
-            get_previous_items(l, index, include_index=True),
+            get_previous_items(lst, index, include_index=True),
             range(6)
         )
 
