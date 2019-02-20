@@ -5,7 +5,9 @@ Changelog
 0.6 (unreleased)
 ----------------
 
-- Nothing changed yet.
+- Fix this package in combination with collective.solr when filters on
+  dates are used
+  [mpeeters]
 
 
 0.5 (2017-11-20)

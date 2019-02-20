@@ -1,6 +1,10 @@
 # -*- coding: utf-8 -*-
 """Utils."""
+
+from DateTime import DateTime
+
 import collections
+import re
 
 
 WINDOW_SIZE = 10
@@ -58,3 +62,14 @@ def convert_to_str(value):
 def clean_query(query):
     """ Remove from eeafacetednavigation query useless keys """
     return {k: v for k, v in query.items() if k not in ('facet.field', 'b_size', 'b_start')}
+
+
+def json_object_hook(value):
+    if isinstance(value, dict):
+        return {k: json_object_hook(v) for k, v in value.items()}
+    if isinstance(value, list):
+        return map(json_object_hook, value)
+    regexp = re.compile('^DateTime:\d{4}\/\d{2}\/\d{2} \d{2}:\d{2}:\d{2}')
+    if isinstance(value, basestring) and re.match(regexp, value):
+        return DateTime(value[9:])
+    return value

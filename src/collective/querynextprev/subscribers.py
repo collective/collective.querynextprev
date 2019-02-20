@@ -14,7 +14,7 @@ from collective.querynextprev.utils import clean_query
 def convert_dates(obj):
     """Convert dates to iso format for json serialization."""
     if isinstance(obj, DateTime):
-        return obj.ISO()
+        return 'DateTime:{0}'.format(str(obj))
     else:
         raise TypeError(repr(obj) + " is not JSON serializable")
 
