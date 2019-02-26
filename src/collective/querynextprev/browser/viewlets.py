@@ -9,7 +9,7 @@ from collective.querynextprev import QUERY, PREVIOUS_UIDS, NEXT_UIDS
 from collective.querynextprev.interfaces import INextPrevNotNavigable
 from collective.querynextprev.utils import (
     first_common_item, get_next_items, get_previous_items, expire_session_data,
-    convert_to_str)
+    convert_to_str, json_object_hook)
 
 
 class NextPrevNavigationViewlet(ViewletBase):  # noqa #pylint: disable=W0223
@@ -27,7 +27,9 @@ class NextPrevNavigationViewlet(ViewletBase):  # noqa #pylint: disable=W0223
         session = self.request.SESSION
         if session.has_key(QUERY):  # noqa
             query = session[QUERY]
-            params = convert_to_str(json.loads(query))
+            params = convert_to_str(
+                json.loads(query, object_hook=json_object_hook)
+            )
             catalog = api.portal.get_tool('portal_catalog')
             brains = catalog.searchResults(**params)
 

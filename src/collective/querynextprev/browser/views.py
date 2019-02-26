@@ -8,7 +8,7 @@ from plone import api
 from collective.querynextprev import QUERY, SEARCH_URL, NEXT_UIDS, PREVIOUS_UIDS  # noqa #pylint: disable=C0301
 from collective.querynextprev.utils import (
     expire_session_data, first_common_item, get_previous_items, get_next_items,
-    convert_to_str)
+    convert_to_str, json_object_hook)
 
 
 class GoToNextItem(BrowserView):
@@ -20,7 +20,10 @@ class GoToNextItem(BrowserView):
     def get_uids(self):
         """Get uids of the query results."""
         catalog = api.portal.get_tool('portal_catalog')
-        params = convert_to_str(json.loads(self.request.SESSION[QUERY]))
+        params = convert_to_str(json.loads(
+            self.request.SESSION[QUERY],
+            object_hook=json_object_hook,
+        ))
         return [brain.UID for brain in catalog.searchResults(**params)]  # noqa #pylint: disable=E1103
 
     def __call__(self):
