@@ -2,7 +2,7 @@ Changelog
 =========
 
 
-0.6 (unreleased)
+0.6 (2019-09-20)
 ----------------
 
 - Fix this package in combination with collective.solr when filters on

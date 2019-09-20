@@ -19,7 +19,7 @@ long_description = (
 
 setup(
     name='collective.querynextprev',
-    version='0.6.dev0',
+    version='0.6',
     description="Navigate through your query results using a next and a previous buttons",
     long_description=long_description,
     # Get more from http://pypi.python.org/pypi?%3Aaction=list_classifiers
