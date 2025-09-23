@@ -1,5 +1,6 @@
 # -*- coding: utf-8 -*-
 """Viewlets."""
+from collective.beaker.interfaces import ISession
 from collective.querynextprev import NEXT_UIDS
 from collective.querynextprev import PREVIOUS_UIDS
 from collective.querynextprev import QUERY
@@ -12,6 +13,7 @@ from collective.querynextprev.utils import get_previous_items
 from collective.querynextprev.utils import json_object_hook
 from plone import api
 from plone.app.layout.viewlets.common import ViewletBase
+from plone.protect.utils import addTokenToUrl
 
 import json
 
@@ -23,12 +25,22 @@ class NextPrevNavigationViewlet(ViewletBase):
     previous_uids = []
     next_uids = []
 
+    @property
+    def go_to_previous_link(self):
+        url = f"{self.context.absolute_url()}/@@go_to_previous_item"
+        return addTokenToUrl(url)
+
+    @property
+    def go_to_next_link(self):
+        url = f"{self.context.absolute_url()}/@@go_to_next_item"
+        return addTokenToUrl(url)
+
     def update(self):
         if INextPrevNotNavigable.providedBy(self.context):
             return
 
-        session = self.request.SESSION
-        if session.has_key(QUERY):
+        session = ISession(self.request)
+        if session and QUERY in session:
             query = session[QUERY]
             params = convert_to_str(json.loads(query, object_hook=json_object_hook))
             catalog = api.portal.get_tool("portal_catalog")
@@ -41,7 +53,7 @@ class NextPrevNavigationViewlet(ViewletBase):
             )
             if len(brains) > max_res:
                 self.is_navigable = False
-                expire_session_data(self.request)
+                expire_session_data(session)
                 return
 
             uids = [brain.UID for brain in brains]
@@ -55,8 +67,9 @@ class NextPrevNavigationViewlet(ViewletBase):
                 self.next_uids = get_next_items(uids, context_index)
                 session[PREVIOUS_UIDS] = json.dumps(self.previous_uids)
                 session[NEXT_UIDS] = json.dumps(self.next_uids)
+                session.save()
                 return  # don't delete session data
-            elif session.has_key(PREVIOUS_UIDS) or session.has_key(NEXT_UIDS):
+            elif PREVIOUS_UIDS in session or NEXT_UIDS in session:
                 # context is not in results anymore
                 # get previous
                 old_previous = json.loads(session[PREVIOUS_UIDS])
@@ -78,7 +91,8 @@ class NextPrevNavigationViewlet(ViewletBase):
                     self.next_uids = get_next_items(uids, index, include_index=True)
                     session[NEXT_UIDS] = json.dumps(self.next_uids)
 
+                session.save()
                 if previous_item or next_item:
                     return  # don't delete session data
 
-            expire_session_data(self.request)
+            expire_session_data(session)

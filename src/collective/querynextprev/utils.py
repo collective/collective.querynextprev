@@ -1,20 +1,22 @@
 # -*- coding: utf-8 -*-
 """Utils."""
 
+from collections.abc import Iterable
+from collections.abc import Mapping
 from DateTime import DateTime
 
-import collections
 import re
 
 
 WINDOW_SIZE = 10
 
 
-def expire_session_data(request):
+def expire_session_data(session):
     """Expire all querynextprev data in session."""
-    for key in request.SESSION.keys():
+    for key in list(session.keys()):
         if key.startswith("querynextprev"):
-            del request.SESSION[key]
+            del session[key]
+    session.save()
 
 
 def first_common_item(l1, l2):
@@ -26,22 +28,22 @@ def first_common_item(l1, l2):
     return None
 
 
-def get_next_items(l, index, include_index=False):
+def get_next_items(lst, index, include_index=False):
     """Get WINDOW_SIZE next items."""
-    last_index = min(index + WINDOW_SIZE, len(l))
+    last_index = min(index + WINDOW_SIZE, len(lst))
     if include_index:
         index -= 1
 
-    return l[index + 1 : last_index + 1]
+    return lst[index + 1 : last_index + 1]  # noqa E203
 
 
-def get_previous_items(l, index, include_index=False):
+def get_previous_items(lst, index, include_index=False):
     """Get WINDOW_SIZE previous items."""
     first_index = max(index - 10, 0)
     if include_index:
         index += 1
 
-    return l[first_index:index]
+    return lst[first_index:index]
 
 
 def convert_to_str(value):
@@ -49,12 +51,10 @@ def convert_to_str(value):
     # pylint: disable=W0141
     if isinstance(value, str):
         return value
-    if isinstance(value, unicode):
-        return value.encode("utf8")
-    elif isinstance(value, collections.Mapping):
-        return dict(map(convert_to_str, value.iteritems()))
-    elif isinstance(value, collections.Iterable):
-        return type(value)(map(convert_to_str, value))
+    elif isinstance(value, Mapping):
+        return dict(list(map(convert_to_str, iter(list(value.items())))))
+    elif isinstance(value, Iterable):
+        return type(value)(list(map(convert_to_str, value)))
     else:
         return value
 
@@ -62,16 +62,18 @@ def convert_to_str(value):
 def clean_query(query):
     """Remove from eeafacetednavigation query useless keys"""
     return {
-        k: v for k, v in query.items() if k not in ("facet.field", "b_size", "b_start")
+        k: v
+        for k, v in list(query.items())
+        if k not in ("facet.field", "b_size", "b_start")
     }
 
 
 def json_object_hook(value):
     if isinstance(value, dict):
-        return {k: json_object_hook(v) for k, v in value.items()}
+        return {k: json_object_hook(v) for k, v in list(value.items())}
     if isinstance(value, list):
-        return map(json_object_hook, value)
-    regexp = re.compile("^DateTime:\d{4}\/\d{2}\/\d{2} \d{2}:\d{2}:\d{2}")
-    if isinstance(value, basestring) and re.match(regexp, value):
+        return list(map(json_object_hook, value))
+    regexp = re.compile(r"^DateTime:\d{4}\/\d{2}\/\d{2} \d{2}:\d{2}:\d{2}")
+    if isinstance(value, str) and re.match(regexp, value):
         return DateTime(value[9:])
     return value

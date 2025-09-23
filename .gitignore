@@ -3,6 +3,7 @@
 *.pyc
 .installed.cfg
 .mr.developer.cfg
+.plone.versioncheck.tracked.json
 .project
 .pydevproject
 .settings/
@@ -12,6 +13,7 @@ develop-eggs/
 include/
 lib/
 parts/
+pyvenv.cfg
 src/*
 !src/collective
 var/

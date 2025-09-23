@@ -1,5 +1,7 @@
 # -*- coding: utf-8 -*-
 """Test utilities."""
+from collective.beaker.interfaces import ENVIRON_KEY
+from collective.beaker.interfaces import ISession
 from collective.querynextprev.testing import COLLECTIVE_QUERYNEXTPREV_INTEGRATION_TESTING
 from collective.querynextprev.utils import clean_query
 from collective.querynextprev.utils import expire_session_data
@@ -8,7 +10,7 @@ from collective.querynextprev.utils import get_next_items
 from collective.querynextprev.utils import get_previous_items
 from plone import api
 
-import unittest2 as unittest
+import unittest
 
 
 class TestUtils(unittest.TestCase):
@@ -22,22 +24,22 @@ class TestUtils(unittest.TestCase):
 
     def tearDown(self):
         if hasattr(self.request, "SESSION"):
-            del self.request.SESSION
+            del self.request.environ[ENVIRON_KEY]
 
     def test_expire_session_data(self):
         """Test expire_session_data function."""
         request = self.request
-        request.SESSION = {}
-        expire_session_data(request)
-        self.assertEqual(request.SESSION, {})
+        session = ISession(request)
+        self.assertEqual(session, {})
+        expire_session_data(session)
+        self.assertEqual(ISession(request), {})
 
-        request.SESSION = {
-            "foo": "bar",
-            "querynextprev.foo": "bar",
-            "querynextprev.bar": "foo",
-        }
-        expire_session_data(request)
-        self.assertEqual(request.SESSION, {"foo": "bar"})
+        session = ISession(request)
+        session["foo"] = "bar"
+        session["querynextprev.foo"] = "bar"
+        session["querynextprev.bar"] = "foo"
+        expire_session_data(session)
+        self.assertEqual(ISession(request), {"foo": "bar"})
 
     def test_first_common_item(self):
         """Test first common item util."""
@@ -60,25 +62,29 @@ class TestUtils(unittest.TestCase):
 
     def test_get_next_items(self):
         """Test get_next_items function."""
-        lst = range(40)
+        lst = list(range(40))
         index = 19
-        self.assertEqual(get_next_items(lst, index), range(20, 30))
+        self.assertEqual(get_next_items(lst, index), list(range(20, 30)))
 
         index = 35
-        self.assertEqual(get_next_items(lst, index), range(36, 40))
+        self.assertEqual(get_next_items(lst, index), list(range(36, 40)))
 
-        self.assertEqual(get_next_items(lst, index, include_index=True), range(35, 40))
+        self.assertEqual(
+            get_next_items(lst, index, include_index=True), list(range(35, 40))
+        )
 
     def test_get_previous_items(self):
         """Test get_previous_items function."""
-        lst = range(40)
+        lst = list(range(40))
         index = 21
-        self.assertEqual(get_previous_items(lst, index), range(11, 21))
+        self.assertEqual(get_previous_items(lst, index), list(range(11, 21)))
 
         index = 5
-        self.assertEqual(get_previous_items(lst, index), range(5))
+        self.assertEqual(get_previous_items(lst, index), list(range(5)))
 
-        self.assertEqual(get_previous_items(lst, index, include_index=True), range(6))
+        self.assertEqual(
+            get_previous_items(lst, index, include_index=True), list(range(6))
+        )
 
     def test_clean_query(self):
         query = {
@@ -87,11 +93,11 @@ class TestUtils(unittest.TestCase):
             "sort_on": "created",
             "facet.field": [
                 "",
-                u"review_state",
-                u"treating_groups",
-                u"assigned_user",
-                u"recipient_groups",
-                u"mail_type",
+                "review_state",
+                "treating_groups",
+                "assigned_user",
+                "recipient_groups",
+                "mail_type",
             ],
             "b_size": 24,
             "b_start": 0,

@@ -1,9 +1,9 @@
 # -*- coding: utf-8 -*-
 """Setup tests for this package."""
 from collective.querynextprev.testing import COLLECTIVE_QUERYNEXTPREV_INTEGRATION_TESTING
-from plone import api
+from plone.base.utils import get_installer
 
-import unittest2 as unittest
+import unittest
 
 
 class TestSetup(unittest.TestCase):
@@ -14,11 +14,12 @@ class TestSetup(unittest.TestCase):
     def setUp(self):
         """Custom shared utility setup for tests."""
         self.portal = self.layer["portal"]
-        self.installer = api.portal.get_tool("portal_quickinstaller")
+        self.request = self.layer["request"]
+        self.installer = get_installer(self.portal, self.request)
 
     def test_product_installed(self):
         """Test if collective.querynextprev is installed with portal_quickinstaller."""
-        self.assertTrue(self.installer.isProductInstalled("collective.querynextprev"))
+        self.assertTrue(self.installer.is_product_installed("collective.querynextprev"))
 
     def test_browserlayer(self):
         """Test that ICollectiveQuerynextprevLayer is registered."""
@@ -34,9 +35,12 @@ class TestUninstall(unittest.TestCase):
 
     def setUp(self):
         self.portal = self.layer["portal"]
-        self.installer = api.portal.get_tool("portal_quickinstaller")
-        self.installer.uninstallProducts(["collective.querynextprev"])
+        self.request = self.layer["request"]
+        self.installer = get_installer(self.portal, self.request)
+        self.installer.uninstall_product("collective.querynextprev")
 
     def test_product_uninstalled(self):
         """Test if collective.querynextprev is cleanly uninstalled."""
-        self.assertFalse(self.installer.isProductInstalled("collective.querynextprev"))
+        self.assertFalse(
+            self.installer.is_product_installed("collective.querynextprev")
+        )

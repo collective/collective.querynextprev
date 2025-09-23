@@ -1,5 +1,6 @@
 # -*- coding: utf-8 -*-
 """Views."""
+from collective.beaker.interfaces import ISession
 from collective.querynextprev import NEXT_UIDS
 from collective.querynextprev import PREVIOUS_UIDS
 from collective.querynextprev import QUERY
@@ -24,9 +25,10 @@ class GoToNextItem(BrowserView):
     def get_uids(self):
         """Get uids of the query results."""
         catalog = api.portal.get_tool("portal_catalog")
+        session = ISession(self.request)
         params = convert_to_str(
             json.loads(
-                self.request.SESSION[QUERY],
+                session[QUERY],
                 object_hook=json_object_hook,
             )
         )
@@ -34,8 +36,8 @@ class GoToNextItem(BrowserView):
 
     def __call__(self):
         request = self.request
-        session = request.SESSION
-        if session.has_key(QUERY) and session.has_key(self.uids_param):
+        session = ISession(self.request)
+        if QUERY in session and self.uids_param in session:
             next_uids = convert_to_str(json.loads(session[self.uids_param]))
 
             # reexecute the query to search within most recent results
@@ -52,16 +54,17 @@ class GoToNextItem(BrowserView):
                 next_uids = get_next_items(new_uids, index)
                 session[PREVIOUS_UIDS] = json.dumps(previous_uids)
                 session[NEXT_UIDS] = json.dumps(next_uids)
+                session.save()
 
                 request.response.redirect(next_url)
                 return  # don't expire session data
 
-        if session.has_key(SEARCH_URL):
+        if SEARCH_URL in session:
             request.response.redirect(session[SEARCH_URL])
         else:
             request.response.redirect(api.portal.get().absolute_url())
 
-        expire_session_data(request)
+        expire_session_data(session)
         return
 
 
