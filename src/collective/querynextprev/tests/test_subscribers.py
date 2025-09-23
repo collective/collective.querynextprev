@@ -1,12 +1,12 @@
 # -*- coding: utf-8 -*-
 """Test subscribers."""
-import unittest2 as unittest
-
+from collective.querynextprev import QUERY
+from collective.querynextprev import SEARCH_URL
+from collective.querynextprev.subscribers import record_query_in_session
+from collective.querynextprev.testing import COLLECTIVE_QUERYNEXTPREV_INTEGRATION_TESTING
 from plone import api
 
-from collective.querynextprev.subscribers import record_query_in_session
-from collective.querynextprev.testing import COLLECTIVE_QUERYNEXTPREV_INTEGRATION_TESTING  # noqa #pylint: disable=C0301
-from collective.querynextprev import QUERY, SEARCH_URL
+import unittest2 as unittest
 
 
 class DummyEvent(object):
@@ -14,7 +14,6 @@ class DummyEvent(object):
 
 
 class TestSubscribers(unittest.TestCase):
-
     """Test subscribers."""
 
     layer = COLLECTIVE_QUERYNEXTPREV_INTEGRATION_TESTING
@@ -25,7 +24,7 @@ class TestSubscribers(unittest.TestCase):
         request = portal.REQUEST
         request.SESSION = {}
         event = DummyEvent()
-        event.query = {'k': 'foobar'}
+        event.query = {"k": "foobar"}
         record_query_in_session(portal, event)
         self.assertIn(QUERY, request.SESSION)
         self.assertIn(SEARCH_URL, request.SESSION)
