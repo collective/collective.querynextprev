@@ -1,21 +1,27 @@
 # -*- coding: utf-8 -*-
+
+from collective.beaker.interfaces import ISession
+from collective.beaker.testing import BEAKER_FIXTURE
+from collective.beaker.testing import testingSession
 from plone.app.robotframework.testing import REMOTE_LIBRARY_BUNDLE_FIXTURE
 from plone.app.testing import applyProfile
 from plone.app.testing import FunctionalTesting
 from plone.app.testing import IntegrationTesting
-from plone.app.testing import PLONE_FIXTURE
 from plone.app.testing import PloneSandboxLayer
 from plone.testing import z2
+from zope.component import provideAdapter
+from zope.publisher.interfaces.http import IHTTPRequest
 
 import collective.querynextprev
 
 
 class CollectiveQuerynextprevLayer(PloneSandboxLayer):
 
-    defaultBases = (PLONE_FIXTURE,)
+    defaultBases = (BEAKER_FIXTURE,)
 
     def setUpZope(self, app, configurationContext):
         self.loadZCML(package=collective.querynextprev)
+        provideAdapter(testingSession, (IHTTPRequest,), ISession)
 
     def setUpPloneSite(self, portal):
         applyProfile(portal, "collective.querynextprev:default")

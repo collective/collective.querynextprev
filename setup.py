@@ -25,9 +25,15 @@ setup(
     classifiers=[
         "Environment :: Web Environment",
         "Framework :: Plone",
-        "Framework :: Plone :: 4.3",
+        "Framework :: Plone :: Addon",
+        "Framework :: Plone :: 6.0",
+        "Framework :: Plone :: 6.1",
         "Programming Language :: Python",
-        "Programming Language :: Python :: 2.7",
+        "Programming Language :: Python :: 3.9",
+        "Programming Language :: Python :: 3.10",
+        "Programming Language :: Python :: 3.11",
+        "Programming Language :: Python :: 3.12",
+        "Programming Language :: Python :: 3.13",
         "Operating System :: OS Independent",
         "License :: OSI Approved :: GNU General Public License v2 (GPLv2)",
     ],
@@ -44,6 +50,7 @@ setup(
     install_requires=[
         "plone.api",
         "setuptools",
+        "collective.beaker",
     ],
     extras_require={
         "test": [

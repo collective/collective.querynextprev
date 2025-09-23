@@ -1,5 +1,6 @@
 # -*- coding: utf-8 -*-
 """Subscribers."""
+from collective.beaker.interfaces import ISession
 from collective.querynextprev import QUERY
 from collective.querynextprev import SEARCH_URL
 from collective.querynextprev.interfaces import IAdditionalDataProvider
@@ -22,9 +23,10 @@ def convert_dates(obj):
 def record_query_in_session(obj, event):
     """Record catalog query in session."""
     request = getRequest()
-    session = request.SESSION
+    session = ISession(request)
     session[QUERY] = json.dumps(clean_query(event.query), default=convert_dates)
     session[SEARCH_URL] = request.HTTP_REFERER
     adapters = getAdapters((obj,), IAdditionalDataProvider)
-    for adapter in dict(adapters).values():
+    for adapter in list(dict(adapters).values()):
         session[adapter.get_key()] = adapter.get_value()
+    session.save()

@@ -1,4 +1,5 @@
 # -*- coding: utf-8 -*-
+from collective.beaker.interfaces import ISession
 from collective.querynextprev import NEXT_UIDS
 from collective.querynextprev import PREVIOUS_UIDS
 from collective.querynextprev import QUERY
@@ -14,7 +15,7 @@ from plone.app.testing import TEST_USER_ID
 from plone.app.testing import TEST_USER_NAME
 
 import json
-import unittest2 as unittest
+import unittest
 
 
 class TestNextPrevNavigationViewlet(unittest.TestCase):
@@ -28,7 +29,6 @@ class TestNextPrevNavigationViewlet(unittest.TestCase):
         login(portal, TEST_USER_NAME)
         self.doc = api.content.create(id="mydoc", type="Document", container=portal)
         self.view = DummyView()
-        portal.REQUEST.SESSION = {}
         self.portal = portal
 
     def test_no_query_set(self):
@@ -36,7 +36,7 @@ class TestNextPrevNavigationViewlet(unittest.TestCase):
         request = portal.REQUEST
         viewlet = NextPrevNavigationViewlet(self.doc, request, self.view)
         viewlet.update()
-        session = request.SESSION
+        session = ISession(request)
         for key in [QUERY, SEARCH_URL, PREVIOUS_UIDS, NEXT_UIDS]:
             self.assertNotIn(key, session)
 
@@ -45,7 +45,7 @@ class TestNextPrevNavigationViewlet(unittest.TestCase):
     def test_alone(self):
         portal = self.portal
         request = portal.REQUEST
-        session = request.SESSION
+        session = ISession(request)
         session[QUERY] = query
         viewlet = NextPrevNavigationViewlet(self.doc, request, self.view)
         viewlet.update()
@@ -57,7 +57,7 @@ class TestNextPrevNavigationViewlet(unittest.TestCase):
     def test_maxresults(self):
         portal = self.portal
         request = portal.REQUEST
-        session = request.SESSION
+        session = ISession(request)
         api.content.create(id="mydoc2", type="Document", container=portal)
         session[QUERY] = query
         viewlet = NextPrevNavigationViewlet(self.doc, request, self.view)
@@ -81,7 +81,7 @@ class TestNextPrevNavigationViewlet(unittest.TestCase):
         """Test when there is a next item and no previous item."""
         portal = self.portal
         request = portal.REQUEST
-        session = request.SESSION
+        session = ISession(request)
         session[QUERY] = query
         doc1 = self.doc
         doc2 = api.content.create(id="mydoc2", type="Document", container=portal)
@@ -100,7 +100,7 @@ class TestNextPrevNavigationViewlet(unittest.TestCase):
         """Test when there is a previous item and no next item."""
         portal = self.portal
         request = portal.REQUEST
-        session = request.SESSION
+        session = ISession(request)
         session[QUERY] = query
         doc1 = self.doc
         doc2 = api.content.create(id="mydoc2", type="Document", container=portal)
@@ -119,7 +119,7 @@ class TestNextPrevNavigationViewlet(unittest.TestCase):
         """Test that 10 items before and 10 items after are kept in session."""
         portal = self.portal
         request = portal.REQUEST
-        session = request.SESSION
+        session = ISession(request)
         session[QUERY] = query
         for x in range(100):
             name = "mydoc-{}".format(x)
@@ -205,7 +205,7 @@ class TestNextPrevNavigationViewlet(unittest.TestCase):
                 "SearchableText": "Great title",
             }
         )
-        session = request.SESSION
+        session = ISession(request)
         session[QUERY] = query
         docs = []
         for x in range(10):
