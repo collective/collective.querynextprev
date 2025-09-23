@@ -13,7 +13,7 @@ WINDOW_SIZE = 10
 def expire_session_data(request):
     """Expire all querynextprev data in session."""
     for key in request.SESSION.keys():
-        if key.startswith('querynextprev'):
+        if key.startswith("querynextprev"):
             del request.SESSION[key]
 
 
@@ -32,7 +32,7 @@ def get_next_items(l, index, include_index=False):
     if include_index:
         index -= 1
 
-    return l[index+1:last_index+1]
+    return l[index + 1 : last_index + 1]
 
 
 def get_previous_items(l, index, include_index=False):
@@ -50,7 +50,7 @@ def convert_to_str(value):
     if isinstance(value, str):
         return value
     if isinstance(value, unicode):
-        return value.encode('utf8')
+        return value.encode("utf8")
     elif isinstance(value, collections.Mapping):
         return dict(map(convert_to_str, value.iteritems()))
     elif isinstance(value, collections.Iterable):
@@ -60,8 +60,10 @@ def convert_to_str(value):
 
 
 def clean_query(query):
-    """ Remove from eeafacetednavigation query useless keys """
-    return {k: v for k, v in query.items() if k not in ('facet.field', 'b_size', 'b_start')}
+    """Remove from eeafacetednavigation query useless keys"""
+    return {
+        k: v for k, v in query.items() if k not in ("facet.field", "b_size", "b_start")
+    }
 
 
 def json_object_hook(value):
@@ -69,7 +71,7 @@ def json_object_hook(value):
         return {k: json_object_hook(v) for k, v in value.items()}
     if isinstance(value, list):
         return map(json_object_hook, value)
-    regexp = re.compile('^DateTime:\d{4}\/\d{2}\/\d{2} \d{2}:\d{2}:\d{2}')
+    regexp = re.compile("^DateTime:\d{4}\/\d{2}\/\d{2} \d{2}:\d{2}:\d{2}")
     if isinstance(value, basestring) and re.match(regexp, value):
         return DateTime(value[9:])
     return value

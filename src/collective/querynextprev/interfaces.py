@@ -1,8 +1,8 @@
 # -*- coding: utf-8 -*-
 """Module where all interfaces, events and exceptions live."""
 
-from zope.publisher.interfaces.browser import IDefaultBrowserLayer
 from zope.interface import Interface
+from zope.publisher.interfaces.browser import IDefaultBrowserLayer
 from zope.viewlet.interfaces import IViewletManager
 
 
@@ -11,12 +11,10 @@ class ICollectiveQuerynextprevLayer(IDefaultBrowserLayer):
 
 
 class INextPrevViewletManager(IViewletManager):
-
     """Viewlet manager for next/previous functionnality."""
 
 
 class IAdditionalDataProvider(Interface):
-
     """Additional data provider."""
 
     def get_key(self):
@@ -27,5 +25,4 @@ class IAdditionalDataProvider(Interface):
 
 
 class INextPrevNotNavigable(Interface):
-
     """Marker interface for contents that are not next/prev navigables."""

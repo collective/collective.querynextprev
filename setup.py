@@ -6,20 +6,19 @@ from setuptools import setup
 
 
 long_description = (
-    open('README.rst').read()
-    + '\n' +
-    'Contributors\n'
-    '============\n'
-    + '\n' +
-    open('CONTRIBUTORS.rst').read()
-    + '\n' +
-    open('CHANGES.rst').read()
-    + '\n')
+    open("README.rst").read() + "\n" + "Contributors\n"
+    "============\n"
+    + "\n"
+    + open("CONTRIBUTORS.rst").read()
+    + "\n"
+    + open("CHANGES.rst").read()
+    + "\n"
+)
 
 
 setup(
-    name='collective.querynextprev',
-    version='0.7.dev0',
+    name="collective.querynextprev",
+    version="0.7.dev0",
     description="Navigate through your query results using a next and a previous buttons",
     long_description=long_description,
     # Get more from http://pypi.python.org/pypi?%3Aaction=list_classifiers
@@ -32,26 +31,26 @@ setup(
         "Operating System :: OS Independent",
         "License :: OSI Approved :: GNU General Public License v2 (GPLv2)",
     ],
-    keywords='Python Plone',
-    author='CÃ©dric Messiant',
-    author_email='cedricmessiant@ecreall.com',
-    url='http://pypi.python.org/pypi/collective.querynextprev',
-    license='GPL version 2',
-    packages=find_packages('src', exclude=['ez_setup']),
-    namespace_packages=['collective'],
-    package_dir={'': 'src'},
+    keywords="Python Plone",
+    author="CÃ©dric Messiant",
+    author_email="cedricmessiant@ecreall.com",
+    url="http://pypi.python.org/pypi/collective.querynextprev",
+    license="GPL version 2",
+    packages=find_packages("src", exclude=["ez_setup"]),
+    namespace_packages=["collective"],
+    package_dir={"": "src"},
     include_package_data=True,
     zip_safe=False,
     install_requires=[
-        'plone.api',
-        'setuptools',
+        "plone.api",
+        "setuptools",
     ],
     extras_require={
-        'test': [
-            'eea.facetednavigation > 8.2',
-            'plone.app.testing',
-            'plone.app.contenttypes',
-            'plone.app.robotframework[debug]',
+        "test": [
+            "eea.facetednavigation > 8.2",
+            "plone.app.testing",
+            "plone.app.contenttypes",
+            "plone.app.robotframework[debug]",
         ],
     },
     entry_points="""
