@@ -18,7 +18,7 @@ class TestSetup(unittest.TestCase):
         self.installer = get_installer(self.portal, self.request)
 
     def test_product_installed(self):
-        """Test if collective.querynextprev is installed with portal_quickinstaller."""
+        """Test if collective.querynextprev is installed."""
         self.assertTrue(self.installer.is_product_installed("collective.querynextprev"))
 
     def test_browserlayer(self):
