@@ -5,7 +5,9 @@ Changelog
 1.0.0 (unreleased)
 ------------------
 
-- Plone 6.1 / 6.2 and Python 3 support (sessions through collective.beaker), Plone 4 dropped.
+- Migrated to Plone 6.2 / Python 3, based on the work started by @laulaz on
+  `python3`: Plone 6.1 / 6.2 support (sessions through collective.beaker),
+  Plone 4 dropped.
   [laulaz, chris-adam]
 
 
