@@ -4,12 +4,16 @@ from collective.beaker.interfaces import ENVIRON_KEY
 from collective.beaker.interfaces import ISession
 from collective.querynextprev.testing import COLLECTIVE_QUERYNEXTPREV_INTEGRATION_TESTING
 from collective.querynextprev.utils import clean_query
+from collective.querynextprev.utils import convert_to_str
 from collective.querynextprev.utils import expire_session_data
 from collective.querynextprev.utils import first_common_item
 from collective.querynextprev.utils import get_next_items
 from collective.querynextprev.utils import get_previous_items
+from collective.querynextprev.utils import json_object_hook
+from DateTime import DateTime
 from plone import api
 
+import json
 import unittest
 
 
@@ -112,3 +116,27 @@ class TestUtils(unittest.TestCase):
                 "portal_type": {"query": ["dmsincomingmail"]},
             },
         )
+
+    def test_convert_to_str(self):
+        value = {"portal_type": ["Document"], "Title": "é", "b_size": 20}
+        result = convert_to_str(value)
+        self.assertEqual(result, {"portal_type": ["Document"], "Title": "é", "b_size": 20})
+        for key in result:
+            self.assertIsInstance(key, str)
+        self.assertIsInstance(result["Title"], str)
+        self.assertIsInstance(result["portal_type"][0], str)
+        self.assertEqual(convert_to_str(("a", "b")), ("a", "b"))
+
+    def test_json_object_hook(self):
+        query = json.loads(
+            '{"created": {"query": "DateTime:2020/01/01 12:00:00 GMT+1", "range": "min"}, '
+            '"Subject": ["DateTime:2020/01/02 12:00:00 GMT+1", "DateTime:foo"], "Title": "foo"}',
+            object_hook=json_object_hook,
+        )
+        self.assertIsInstance(query["created"]["query"], DateTime)
+        self.assertEqual(query["created"]["query"], DateTime("2020/01/01 12:00:00 GMT+1"))
+        self.assertEqual(query["created"]["range"], "min")
+        self.assertEqual(
+            list(query["Subject"]), [DateTime("2020/01/02 12:00:00 GMT+1"), "DateTime:foo"]
+        )
+        self.assertEqual(query["Title"], "foo")

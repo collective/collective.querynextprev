@@ -5,6 +5,7 @@ from collective.querynextprev import PREVIOUS_UIDS
 from collective.querynextprev import QUERY
 from collective.querynextprev import SEARCH_URL
 from collective.querynextprev.browser.viewlets import NextPrevNavigationViewlet
+from collective.querynextprev.interfaces import INextPrevNotNavigable
 from collective.querynextprev.testing import COLLECTIVE_QUERYNEXTPREV_INTEGRATION_TESTING
 from collective.querynextprev.tests import DummyView
 from collective.querynextprev.tests import query
@@ -13,6 +14,7 @@ from plone.app.testing import login
 from plone.app.testing import setRoles
 from plone.app.testing import TEST_USER_ID
 from plone.app.testing import TEST_USER_NAME
+from zope.interface import alsoProvides
 
 import json
 import unittest
@@ -76,6 +78,21 @@ class TestNextPrevNavigationViewlet(unittest.TestCase):
         self.assertNotIn(PREVIOUS_UIDS, session)
         self.assertNotIn(NEXT_UIDS, session)
         self.assertFalse(viewlet.is_navigable)
+
+    def test_not_navigable(self):
+        """INextPrevNotNavigable context: no navigation, session data kept."""
+        portal = self.portal
+        request = portal.REQUEST
+        session = ISession(request)
+        session[QUERY] = query
+        api.content.create(id="mydoc2", type="Document", container=portal)
+        alsoProvides(self.doc, INextPrevNotNavigable)
+        viewlet = NextPrevNavigationViewlet(self.doc, request, self.view)
+        viewlet.update()
+        self.assertFalse(viewlet.is_navigable)
+        self.assertEqual(session[QUERY], query)
+        self.assertNotIn(PREVIOUS_UIDS, session)
+        self.assertNotIn(NEXT_UIDS, session)
 
     def test_one_after(self):
         """Test when there is a next item and no previous item."""
