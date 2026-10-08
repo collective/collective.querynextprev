@@ -101,7 +101,10 @@ class TestNextPrevNavigationViewlet(unittest.TestCase):
         session = ISession(request)
         session[QUERY] = query
         doc1 = self.doc
-        doc2 = api.content.create(id="mydoc2", type="Document", container=portal)
+        # titles sort as created: tied titles follow the random catalog rids
+        doc2 = api.content.create(
+            id="mydoc2", title="mydoc2", type="Document", container=portal
+        )
         viewlet = NextPrevNavigationViewlet(doc1, request, self.view)
         viewlet.update()
         self.assertEqual(session[QUERY], query)
@@ -120,7 +123,10 @@ class TestNextPrevNavigationViewlet(unittest.TestCase):
         session = ISession(request)
         session[QUERY] = query
         doc1 = self.doc
-        doc2 = api.content.create(id="mydoc2", type="Document", container=portal)
+        # titles sort as created: tied titles follow the random catalog rids
+        doc2 = api.content.create(
+            id="mydoc2", title="mydoc2", type="Document", container=portal
+        )
         viewlet = NextPrevNavigationViewlet(doc2, request, self.view)
         viewlet.update()
         self.assertEqual(session[QUERY], query)
@@ -140,7 +146,8 @@ class TestNextPrevNavigationViewlet(unittest.TestCase):
         session[QUERY] = query
         for x in range(100):
             name = "mydoc-{}".format(x)
-            api.content.create(id=name, type="Document", container=portal)
+            # titles sort as created: tied titles follow the random catalog rids
+            api.content.create(id=name, title=name, type="Document", container=portal)
 
         viewlet = NextPrevNavigationViewlet(self.doc, request, self.view)
         viewlet.update()
@@ -227,8 +234,10 @@ class TestNextPrevNavigationViewlet(unittest.TestCase):
         docs = []
         for x in range(10):
             name = "mydoc-{}".format(x)
+            # titles sort as created: tied titles follow the random catalog rids
+            title = "Great title {}".format(x)
             doc = api.content.create(
-                id=name, title="Great title", type="Document", container=portal
+                id=name, title=title, type="Document", container=portal
             )
             docs.append(doc)
 
