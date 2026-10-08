@@ -2,8 +2,8 @@ Changelog
 =========
 
 
-0.7 (unreleased)
-----------------
+1.0.0 (unreleased)
+------------------
 
 - Plone 6.1 / 6.2 and Python 3 support (sessions through collective.beaker), Plone 4 dropped.
   [laulaz, chris-adam]
