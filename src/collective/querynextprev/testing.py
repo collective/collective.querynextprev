@@ -75,11 +75,6 @@ class CollectiveQuerynextprevRobotLayer(PloneSandboxLayer):
     def setUpPloneSite(self, portal):
         applyProfile(portal, "eea.facetednavigation:default")
         applyProfile(portal, "collective.querynextprev:default")
-        # eea.facetednavigation 16 async bundles: results randomly never load (jQuery.bbq undefined)
-        for bundle in ("faceted.jquery", "faceted.view", "faceted.edit"):
-            record = "plone.bundles/{}.load_async".format(bundle)
-            if api.portal.get_registry_record(record, default=None) is not None:
-                api.portal.set_registry_record(record, False)
         create_search_pages(portal)
 
 
