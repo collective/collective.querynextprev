@@ -1,13 +1,12 @@
-.. image:: https://github.com/collective/collective.querynextprev/actions/workflows/main.yml/badge.svg
-    :target: https://github.com/collective/collective.querynextprev/actions/workflows/main.yml
-.. image:: https://coveralls.io/repos/github/collective/collective.querynextprev/badge.svg
-    :target: https://coveralls.io/github/collective/collective.querynextprev
-
 ==============================================================================
 collective.querynextprev
 ==============================================================================
 
+.. image:: https://github.com/collective/collective.querynextprev/actions/workflows/main.yml/badge.svg
+    :target: https://github.com/collective/collective.querynextprev/actions/workflows/main.yml
 
+.. image:: https://coveralls.io/repos/github/collective/collective.querynextprev/badge.svg
+    :target: https://coveralls.io/github/collective/collective.querynextprev
 
 
 This package adds next/previous buttons that allow you to navigate through your query results.
