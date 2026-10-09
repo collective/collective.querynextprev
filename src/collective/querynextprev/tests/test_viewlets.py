@@ -1,9 +1,11 @@
 # -*- coding: utf-8 -*-
+from collective.beaker.interfaces import ISession
 from collective.querynextprev import NEXT_UIDS
 from collective.querynextprev import PREVIOUS_UIDS
 from collective.querynextprev import QUERY
 from collective.querynextprev import SEARCH_URL
 from collective.querynextprev.browser.viewlets import NextPrevNavigationViewlet
+from collective.querynextprev.interfaces import INextPrevNotNavigable
 from collective.querynextprev.testing import COLLECTIVE_QUERYNEXTPREV_INTEGRATION_TESTING
 from collective.querynextprev.tests import DummyView
 from collective.querynextprev.tests import query
@@ -12,9 +14,10 @@ from plone.app.testing import login
 from plone.app.testing import setRoles
 from plone.app.testing import TEST_USER_ID
 from plone.app.testing import TEST_USER_NAME
+from zope.interface import alsoProvides
 
 import json
-import unittest2 as unittest
+import unittest
 
 
 class TestNextPrevNavigationViewlet(unittest.TestCase):
@@ -28,7 +31,6 @@ class TestNextPrevNavigationViewlet(unittest.TestCase):
         login(portal, TEST_USER_NAME)
         self.doc = api.content.create(id="mydoc", type="Document", container=portal)
         self.view = DummyView()
-        portal.REQUEST.SESSION = {}
         self.portal = portal
 
     def test_no_query_set(self):
@@ -36,7 +38,7 @@ class TestNextPrevNavigationViewlet(unittest.TestCase):
         request = portal.REQUEST
         viewlet = NextPrevNavigationViewlet(self.doc, request, self.view)
         viewlet.update()
-        session = request.SESSION
+        session = ISession(request)
         for key in [QUERY, SEARCH_URL, PREVIOUS_UIDS, NEXT_UIDS]:
             self.assertNotIn(key, session)
 
@@ -45,7 +47,7 @@ class TestNextPrevNavigationViewlet(unittest.TestCase):
     def test_alone(self):
         portal = self.portal
         request = portal.REQUEST
-        session = request.SESSION
+        session = ISession(request)
         session[QUERY] = query
         viewlet = NextPrevNavigationViewlet(self.doc, request, self.view)
         viewlet.update()
@@ -57,7 +59,7 @@ class TestNextPrevNavigationViewlet(unittest.TestCase):
     def test_maxresults(self):
         portal = self.portal
         request = portal.REQUEST
-        session = request.SESSION
+        session = ISession(request)
         api.content.create(id="mydoc2", type="Document", container=portal)
         session[QUERY] = query
         viewlet = NextPrevNavigationViewlet(self.doc, request, self.view)
@@ -77,14 +79,32 @@ class TestNextPrevNavigationViewlet(unittest.TestCase):
         self.assertNotIn(NEXT_UIDS, session)
         self.assertFalse(viewlet.is_navigable)
 
+    def test_not_navigable(self):
+        """INextPrevNotNavigable context: no navigation, session data kept."""
+        portal = self.portal
+        request = portal.REQUEST
+        session = ISession(request)
+        session[QUERY] = query
+        api.content.create(id="mydoc2", type="Document", container=portal)
+        alsoProvides(self.doc, INextPrevNotNavigable)
+        viewlet = NextPrevNavigationViewlet(self.doc, request, self.view)
+        viewlet.update()
+        self.assertFalse(viewlet.is_navigable)
+        self.assertEqual(session[QUERY], query)
+        self.assertNotIn(PREVIOUS_UIDS, session)
+        self.assertNotIn(NEXT_UIDS, session)
+
     def test_one_after(self):
         """Test when there is a next item and no previous item."""
         portal = self.portal
         request = portal.REQUEST
-        session = request.SESSION
+        session = ISession(request)
         session[QUERY] = query
         doc1 = self.doc
-        doc2 = api.content.create(id="mydoc2", type="Document", container=portal)
+        # titles sort as created: tied titles follow the random catalog rids
+        doc2 = api.content.create(
+            id="mydoc2", title="mydoc2", type="Document", container=portal
+        )
         viewlet = NextPrevNavigationViewlet(doc1, request, self.view)
         viewlet.update()
         self.assertEqual(session[QUERY], query)
@@ -100,10 +120,13 @@ class TestNextPrevNavigationViewlet(unittest.TestCase):
         """Test when there is a previous item and no next item."""
         portal = self.portal
         request = portal.REQUEST
-        session = request.SESSION
+        session = ISession(request)
         session[QUERY] = query
         doc1 = self.doc
-        doc2 = api.content.create(id="mydoc2", type="Document", container=portal)
+        # titles sort as created: tied titles follow the random catalog rids
+        doc2 = api.content.create(
+            id="mydoc2", title="mydoc2", type="Document", container=portal
+        )
         viewlet = NextPrevNavigationViewlet(doc2, request, self.view)
         viewlet.update()
         self.assertEqual(session[QUERY], query)
@@ -119,11 +142,12 @@ class TestNextPrevNavigationViewlet(unittest.TestCase):
         """Test that 10 items before and 10 items after are kept in session."""
         portal = self.portal
         request = portal.REQUEST
-        session = request.SESSION
+        session = ISession(request)
         session[QUERY] = query
         for x in range(100):
             name = "mydoc-{}".format(x)
-            api.content.create(id=name, type="Document", container=portal)
+            # titles sort as created: tied titles follow the random catalog rids
+            api.content.create(id=name, title=name, type="Document", container=portal)
 
         viewlet = NextPrevNavigationViewlet(self.doc, request, self.view)
         viewlet.update()
@@ -205,13 +229,15 @@ class TestNextPrevNavigationViewlet(unittest.TestCase):
                 "SearchableText": "Great title",
             }
         )
-        session = request.SESSION
+        session = ISession(request)
         session[QUERY] = query
         docs = []
         for x in range(10):
             name = "mydoc-{}".format(x)
+            # titles sort as created: tied titles follow the random catalog rids
+            title = "Great title {}".format(x)
             doc = api.content.create(
-                id=name, title="Great title", type="Document", container=portal
+                id=name, title=title, type="Document", container=portal
             )
             docs.append(doc)
 

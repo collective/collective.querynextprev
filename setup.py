@@ -18,16 +18,23 @@ long_description = (
 
 setup(
     name="collective.querynextprev",
-    version="0.7.dev0",
+    version="1.0.0.dev0",
     description="Navigate through your query results using a next and a previous buttons",
     long_description=long_description,
     # Get more from http://pypi.python.org/pypi?%3Aaction=list_classifiers
     classifiers=[
         "Environment :: Web Environment",
         "Framework :: Plone",
-        "Framework :: Plone :: 4.3",
+        "Framework :: Plone :: Addon",
+        "Framework :: Plone :: 6.0",
+        "Framework :: Plone :: 6.1",
+        "Framework :: Plone :: 6.2",
         "Programming Language :: Python",
-        "Programming Language :: Python :: 2.7",
+        "Programming Language :: Python :: 3.9",
+        "Programming Language :: Python :: 3.10",
+        "Programming Language :: Python :: 3.11",
+        "Programming Language :: Python :: 3.12",
+        "Programming Language :: Python :: 3.13",
         "Operating System :: OS Independent",
         "License :: OSI Approved :: GNU General Public License v2 (GPLv2)",
     ],
@@ -37,13 +44,13 @@ setup(
     url="http://pypi.python.org/pypi/collective.querynextprev",
     license="GPL version 2",
     packages=find_packages("src", exclude=["ez_setup"]),
-    namespace_packages=["collective"],
     package_dir={"": "src"},
     include_package_data=True,
     zip_safe=False,
     install_requires=[
         "plone.api",
         "setuptools",
+        "collective.beaker",
     ],
     extras_require={
         "test": [

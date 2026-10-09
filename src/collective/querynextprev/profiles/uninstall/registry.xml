@@ -1,0 +1,5 @@
+<registry>
+
+    <record name="collective.querynextprev.maxresults" remove="true" />
+
+</registry>
