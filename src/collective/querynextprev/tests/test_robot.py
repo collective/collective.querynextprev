@@ -1,25 +1,18 @@
-# -*- coding: utf-8 -*-
 """Robot suites of tests/robot, run with the layer of their file name.
 
 ROBOT_PLONE_MAJOR (4 or 6) selects the UI keywords: robotsuite passes the
 ROBOT_* environment variables to the suites as robot variables.
 """
-from collective.querynextprev.testing import COLLECTIVE_QUERYNEXTPREV_ACCEPTANCE_TESTING as ACCEPTANCE
+
+from collective.querynextprev.testing import (
+    COLLECTIVE_QUERYNEXTPREV_ACCEPTANCE_TESTING as ACCEPTANCE,
+)
+from importlib.metadata import version
 from plone.testing import layered
 
 import os
 import robotsuite
 import unittest
-
-
-try:
-    from importlib.metadata import version
-except ImportError:  # Python 2
-    from pkg_resources import get_distribution
-
-    def version(name):
-        return get_distribution(name).version
-
 
 # suites needing an optional integration layer, e.g. {'test_facetednav.robot': ADDONS_ACCEPTANCE}
 SUITE_LAYERS = {}

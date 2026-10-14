@@ -1,5 +1,5 @@
-# -*- coding: utf-8 -*-
 """Viewlets."""
+
 from collective.beaker.interfaces import ISession
 from collective.querynextprev import NEXT_UIDS
 from collective.querynextprev import PREVIOUS_UIDS

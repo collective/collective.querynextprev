@@ -1,5 +1,5 @@
-# -*- coding: utf-8 -*-
 """Views."""
+
 from collective.beaker.interfaces import ISession
 from collective.querynextprev import NEXT_UIDS
 from collective.querynextprev import PREVIOUS_UIDS
@@ -75,6 +75,6 @@ class GoToPreviousItem(GoToNextItem):
 
     def get_uids(self):
         """Reverse uids."""
-        uids = super(GoToPreviousItem, self).get_uids()
+        uids = super().get_uids()
         uids.reverse()
         return uids

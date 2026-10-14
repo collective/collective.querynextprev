@@ -1,5 +1,5 @@
-# -*- coding: utf-8 -*-
 """Test views."""
+
 from collective.beaker.interfaces import ISession
 from collective.querynextprev import NEXT_UIDS
 from collective.querynextprev import PREVIOUS_UIDS
@@ -7,7 +7,9 @@ from collective.querynextprev import QUERY
 from collective.querynextprev import SEARCH_URL
 from collective.querynextprev.browser.views import GoToNextItem
 from collective.querynextprev.browser.views import GoToPreviousItem
-from collective.querynextprev.testing import COLLECTIVE_QUERYNEXTPREV_INTEGRATION_TESTING
+from collective.querynextprev.testing import (
+    COLLECTIVE_QUERYNEXTPREV_INTEGRATION_TESTING,
+)
 from collective.querynextprev.tests import query_utf8
 from plone import api
 from plone.app.testing import login
@@ -29,7 +31,7 @@ class TestGoToNextItem(unittest.TestCase):
         setRoles(portal, TEST_USER_ID, ["Manager"])
         login(portal, TEST_USER_NAME)
         for x in range(30):
-            name = "mydoc-{:02d}".format(x + 1)
+            name = f"mydoc-{x + 1:02d}"
             api.content.create(id=name, type="Document", container=portal, title="é")
 
         self.doc1 = portal["mydoc-01"]
@@ -108,7 +110,7 @@ class TestGoToPreviousItem(unittest.TestCase):
         setRoles(portal, TEST_USER_ID, ["Manager"])
         login(portal, TEST_USER_NAME)
         for x in range(30):
-            name = "mydoc-{:02d}".format(x + 1)
+            name = f"mydoc-{x + 1:02d}"
             api.content.create(id=name, type="Document", container=portal, title="é")
 
         self.doc1 = portal["mydoc-01"]

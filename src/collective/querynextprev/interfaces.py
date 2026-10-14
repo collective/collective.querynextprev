@@ -1,4 +1,3 @@
-# -*- coding: utf-8 -*-
 """Module where all interfaces, events and exceptions live."""
 
 from zope.interface import Interface
@@ -11,7 +10,7 @@ class ICollectiveQuerynextprevLayer(IDefaultBrowserLayer):
 
 
 class INextPrevViewletManager(IViewletManager):
-    """Viewlet manager for next/previous functionnality."""
+    """Viewlet manager for next/previous functionality."""
 
 
 class IAdditionalDataProvider(Interface):

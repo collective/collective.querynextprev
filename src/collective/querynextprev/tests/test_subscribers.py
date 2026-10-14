@@ -1,4 +1,3 @@
-# -*- coding: utf-8 -*-
 """Test subscribers."""
 
 from collective.beaker.interfaces import ISession
@@ -7,7 +6,9 @@ from collective.querynextprev import SEARCH_URL
 from collective.querynextprev.interfaces import IAdditionalDataProvider
 from collective.querynextprev.subscribers import convert_dates
 from collective.querynextprev.subscribers import record_query_in_session
-from collective.querynextprev.testing import COLLECTIVE_QUERYNEXTPREV_INTEGRATION_TESTING
+from collective.querynextprev.testing import (
+    COLLECTIVE_QUERYNEXTPREV_INTEGRATION_TESTING,
+)
 from DateTime import DateTime
 from plone import api
 from zope.component import adapter
@@ -19,13 +20,13 @@ import json
 import unittest
 
 
-class DummyEvent(object):
+class DummyEvent:
     pass
 
 
 @implementer(IAdditionalDataProvider)
 @adapter(Interface)
-class ContextIdProvider(object):
+class ContextIdProvider:
     """Additional data: id of the faceted context."""
 
     def __init__(self, context):
@@ -73,7 +74,10 @@ class TestSubscribers(unittest.TestCase):
         self.assertEqual(
             json.loads(session[QUERY]),
             {
-                "created": {"query": "DateTime:2020/01/01 12:00:00 GMT+1", "range": "min"},
+                "created": {
+                    "query": "DateTime:2020/01/01 12:00:00 GMT+1",
+                    "range": "min",
+                },
                 "portal_type": "Document",
             },
         )

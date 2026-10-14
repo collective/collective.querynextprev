@@ -9,6 +9,8 @@ Changelog
   `python3`: Plone 6.1 / 6.2 support (sessions through collective.beaker),
   Plone 4 dropped.
   [laulaz, chris-adam]
+- Added plone.meta configuration (tox, pre-commit, GitHub Actions).
+  [chris-adam]
 
 
 0.6 (2019-09-20)

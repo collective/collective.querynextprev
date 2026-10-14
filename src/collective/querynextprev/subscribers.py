@@ -1,5 +1,5 @@
-# -*- coding: utf-8 -*-
 """Subscribers."""
+
 from collective.beaker.interfaces import ISession
 from collective.querynextprev import QUERY
 from collective.querynextprev import SEARCH_URL
@@ -15,7 +15,7 @@ import json
 def convert_dates(obj):
     """Convert dates to iso format for json serialization."""
     if isinstance(obj, DateTime):
-        return "DateTime:{0}".format(str(obj))
+        return f"DateTime:{str(obj)}"
     else:
         raise TypeError(repr(obj) + " is not JSON serializable")
 

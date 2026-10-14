@@ -1,4 +1,3 @@
-# -*- coding: utf-8 -*-
 """Utils."""
 
 from collections.abc import Iterable
@@ -6,7 +5,6 @@ from collections.abc import Mapping
 from DateTime import DateTime
 
 import re
-
 
 WINDOW_SIZE = 10
 

@@ -1,5 +1,3 @@
-# -*- coding: utf-8 -*-
-
 from collective.beaker.interfaces import ISession
 from collective.beaker.testing import BEAKER_FIXTURE
 from collective.beaker.testing import testingSession
@@ -59,7 +57,7 @@ def create_search_pages(portal):
         # default faceted configuration: Documents sorted on effective (reverse)
         for day, title in ((3, "Page 1"), (2, "Page 2"), (1, "Page 3")):
             page = api.content.create(container=folder, type="Document", title=title)
-            page.setEffectiveDate(DateTime("2020/01/0{} 12:00".format(day)))
+            page.setEffectiveDate(DateTime(f"2020/01/0{day} 12:00"))
             page.reindexObject()
 
 

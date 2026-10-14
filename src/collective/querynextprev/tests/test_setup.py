@@ -1,6 +1,8 @@
-# -*- coding: utf-8 -*-
 """Setup tests for this package."""
-from collective.querynextprev.testing import COLLECTIVE_QUERYNEXTPREV_INTEGRATION_TESTING
+
+from collective.querynextprev.testing import (
+    COLLECTIVE_QUERYNEXTPREV_INTEGRATION_TESTING,
+)
 from plone.base.utils import get_installer
 
 import unittest

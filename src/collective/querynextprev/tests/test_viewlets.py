@@ -1,4 +1,3 @@
-# -*- coding: utf-8 -*-
 from collective.beaker.interfaces import ISession
 from collective.querynextprev import NEXT_UIDS
 from collective.querynextprev import PREVIOUS_UIDS
@@ -6,7 +5,9 @@ from collective.querynextprev import QUERY
 from collective.querynextprev import SEARCH_URL
 from collective.querynextprev.browser.viewlets import NextPrevNavigationViewlet
 from collective.querynextprev.interfaces import INextPrevNotNavigable
-from collective.querynextprev.testing import COLLECTIVE_QUERYNEXTPREV_INTEGRATION_TESTING
+from collective.querynextprev.testing import (
+    COLLECTIVE_QUERYNEXTPREV_INTEGRATION_TESTING,
+)
 from collective.querynextprev.tests import DummyView
 from collective.querynextprev.tests import query
 from plone import api
@@ -145,7 +146,7 @@ class TestNextPrevNavigationViewlet(unittest.TestCase):
         session = ISession(request)
         session[QUERY] = query
         for x in range(100):
-            name = "mydoc-{}".format(x)
+            name = f"mydoc-{x}"
             # titles sort as created: tied titles follow the random catalog rids
             api.content.create(id=name, title=name, type="Document", container=portal)
 
@@ -233,9 +234,9 @@ class TestNextPrevNavigationViewlet(unittest.TestCase):
         session[QUERY] = query
         docs = []
         for x in range(10):
-            name = "mydoc-{}".format(x)
+            name = f"mydoc-{x}"
             # titles sort as created: tied titles follow the random catalog rids
-            title = "Great title {}".format(x)
+            title = f"Great title {x}"
             doc = api.content.create(
                 id=name, title=title, type="Document", container=portal
             )
