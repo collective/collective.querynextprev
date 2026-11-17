@@ -1,12 +1,15 @@
-# -*- coding: utf-8 -*-
 """Test views."""
+
+from collective.beaker.interfaces import ISession
 from collective.querynextprev import NEXT_UIDS
 from collective.querynextprev import PREVIOUS_UIDS
 from collective.querynextprev import QUERY
 from collective.querynextprev import SEARCH_URL
 from collective.querynextprev.browser.views import GoToNextItem
 from collective.querynextprev.browser.views import GoToPreviousItem
-from collective.querynextprev.testing import COLLECTIVE_QUERYNEXTPREV_INTEGRATION_TESTING
+from collective.querynextprev.testing import (
+    COLLECTIVE_QUERYNEXTPREV_INTEGRATION_TESTING,
+)
 from collective.querynextprev.tests import query_utf8
 from plone import api
 from plone.app.testing import login
@@ -15,7 +18,7 @@ from plone.app.testing import TEST_USER_ID
 from plone.app.testing import TEST_USER_NAME
 
 import json
-import unittest2 as unittest
+import unittest
 
 
 class TestGoToNextItem(unittest.TestCase):
@@ -28,7 +31,7 @@ class TestGoToNextItem(unittest.TestCase):
         setRoles(portal, TEST_USER_ID, ["Manager"])
         login(portal, TEST_USER_NAME)
         for x in range(30):
-            name = "mydoc-{:02d}".format(x + 1)
+            name = f"mydoc-{x + 1:02d}"
             api.content.create(id=name, type="Document", container=portal, title="é")
 
         self.doc1 = portal["mydoc-01"]
@@ -41,9 +44,9 @@ class TestGoToNextItem(unittest.TestCase):
     def test_get_uids(self):
         """Test get_uids method."""
         request = self.portal.REQUEST
-        request.SESSION = {
-            QUERY: query_utf8,
-        }
+        session = ISession(request)
+        session[QUERY] = query_utf8
+        session.save()
         context = self.portal
         view = GoToNextItem(context, request)
         uids = view.get_uids()
@@ -60,51 +63,41 @@ class TestGoToNextItem(unittest.TestCase):
         request = portal.REQUEST
 
         # no query, no search url
-        request.SESSION = {}
+        session = ISession(request)
+        session.save()
         view = GoToNextItem(doc1, request)
         view()
-        self.assertEqual(
-            request.response.getHeader("location"),
-            portal.absolute_url(),
-        )
+        self.assertEqual(request.response.getHeader("location"), portal.absolute_url())
 
         # no search url
-        request.SESSION = {SEARCH_URL: "http://www.example.com"}
+        session[SEARCH_URL] = "http://www.example.com"
+        session.save()
         view = GoToNextItem(doc1, request)
         view()
         self.assertEqual(
-            request.response.getHeader("location"),
-            "http://www.example.com",
+            request.response.getHeader("location"), "http://www.example.com"
         )
 
         # with a query
-        request.SESSION = {
-            QUERY: query_utf8,
-            PREVIOUS_UIDS: json.dumps([]),
-            NEXT_UIDS: json.dumps([doc2.UID(), doc3.UID()]),
-            SEARCH_URL: "http://www.example.com",
-        }
+        session[QUERY] = query_utf8
+        session[PREVIOUS_UIDS] = json.dumps([])
+        session[NEXT_UIDS] = json.dumps([doc2.UID(), doc3.UID()])
+        session[SEARCH_URL] = "http://www.example.com"
+        session.save()
         view = GoToNextItem(doc1, request)
         view()
-        self.assertEqual(
-            request.response.getHeader("location"),
-            doc2.absolute_url(),
-        )
+        self.assertEqual(request.response.getHeader("location"), doc2.absolute_url())
 
         # with a query, first next item deleted
-        request.SESSION = {
-            QUERY: query_utf8,
-            PREVIOUS_UIDS: json.dumps([]),
-            NEXT_UIDS: json.dumps([doc2.UID(), doc3.UID()]),
-            SEARCH_URL: "http://www.example.com",
-        }
+        session[QUERY] = query_utf8
+        session[PREVIOUS_UIDS] = json.dumps([])
+        session[NEXT_UIDS] = json.dumps([doc2.UID(), doc3.UID()])
+        session[SEARCH_URL] = "http://www.example.com"
+        session.save()
         view = GoToNextItem(doc1, request)
         api.content.delete(doc2)
         view()
-        self.assertEqual(
-            request.response.getHeader("location"),
-            doc3.absolute_url(),
-        )
+        self.assertEqual(request.response.getHeader("location"), doc3.absolute_url())
 
 
 class TestGoToPreviousItem(unittest.TestCase):
@@ -117,7 +110,7 @@ class TestGoToPreviousItem(unittest.TestCase):
         setRoles(portal, TEST_USER_ID, ["Manager"])
         login(portal, TEST_USER_NAME)
         for x in range(30):
-            name = "mydoc-{:02d}".format(x + 1)
+            name = f"mydoc-{x + 1:02d}"
             api.content.create(id=name, type="Document", container=portal, title="é")
 
         self.doc1 = portal["mydoc-01"]
@@ -130,9 +123,9 @@ class TestGoToPreviousItem(unittest.TestCase):
     def test_get_uids(self):
         """Test get_uids method."""
         request = self.portal.REQUEST
-        request.SESSION = {
-            QUERY: query_utf8,
-        }
+        session = ISession(request)
+        session[QUERY] = query_utf8
+        session.save()
         context = self.portal
         view = GoToPreviousItem(context, request)
         uids = view.get_uids()
@@ -149,30 +142,25 @@ class TestGoToPreviousItem(unittest.TestCase):
         request = portal.REQUEST
 
         # with a query
-        request.SESSION = {
-            QUERY: query_utf8,
-            PREVIOUS_UIDS: json.dumps([doc2.UID(), doc1.UID()]),
-            NEXT_UIDS: json.dumps([]),
-            SEARCH_URL: "http://www.example.com",
-        }
+        session = ISession(request)
+        session[QUERY] = query_utf8
+        session[PREVIOUS_UIDS] = json.dumps([doc2.UID(), doc1.UID()])
+        session[NEXT_UIDS] = json.dumps([])
+        session[SEARCH_URL] = "http://www.example.com"
+        session.save()
         view = GoToPreviousItem(doc3, request)
         view()
-        self.assertEqual(
-            request.response.getHeader("location"),
-            doc2.absolute_url(),
-        )
+        self.assertEqual(request.response.getHeader("location"), doc2.absolute_url())
 
         # with a query, first next item deleted
-        request.SESSION = {
-            QUERY: query_utf8,
-            PREVIOUS_UIDS: json.dumps([doc1.UID()]),
-            NEXT_UIDS: json.dumps([]),
-            SEARCH_URL: "http://www.example.com",
-        }
+        session[QUERY] = query_utf8
+        session[PREVIOUS_UIDS] = json.dumps([doc1.UID()])
+        session[NEXT_UIDS] = json.dumps([])
+        session[SEARCH_URL] = "http://www.example.com"
+        session.save()
         api.content.delete(doc1)
         view = GoToPreviousItem(doc2, request)
         view()
         self.assertEqual(
-            request.response.getHeader("location"),
-            "http://www.example.com",
+            request.response.getHeader("location"), "http://www.example.com"
         )

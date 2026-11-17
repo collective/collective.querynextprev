@@ -1,7 +1,6 @@
-<?xml version="1.0"?>
+<?xml version="1.0" encoding="utf-8"?>
 <layers>
-  <layer
-      name="collective.querynextprev"
-      interface="collective.querynextprev.interfaces.ICollectiveQuerynextprevLayer"
-      />
+  <layer interface="collective.querynextprev.interfaces.ICollectiveQuerynextprevLayer"
+         name="collective.querynextprev"
+  />
 </layers>

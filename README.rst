@@ -2,12 +2,8 @@
 collective.querynextprev
 ==============================================================================
 
-.. image:: https://secure.travis-ci.org/collective/collective.querynextprev.png
-    :target: http://travis-ci.org/collective/collective.querynextprev
-
-.. image:: https://coveralls.io/repos/collective/collective.querynextprev/badge.png?branch=master
-    :alt: Coveralls badge
-    :target: https://coveralls.io/r/collective/collective.querynextprev
+.. image:: https://github.com/collective/collective.querynextprev/actions/workflows/meta.yml/badge.svg?branch=master
+    :target: https://github.com/collective/collective.querynextprev/actions/workflows/meta.yml
 
 
 This package adds next/previous buttons that allow you to navigate through your query results.
@@ -15,7 +11,7 @@ This package adds next/previous buttons that allow you to navigate through your 
 Out of the box, it works with `eea.facetednavigation <https://github.com/collective/eea.facetednavigation>`__ queries (requires ``eea.facetednavigation`` > 8.2).
 
 
-To add support for more queries, you have to record the query in the request session and optionnaly a search url (see ``record_query_in_session`` subscriber).
+To add support for more queries, you have to record the query in the request session and optionally a search url (see ``record_query_in_session`` subscriber).
 The `search url` is the url that will be used by the next/previous links when there is no more result. If no search url is provided, it redirects to the portal url.
 
 

@@ -1,6 +1,4 @@
-# -*- coding: utf-8 -*-
 import json
-
 
 query = json.dumps(
     {
@@ -18,5 +16,5 @@ query_utf8 = json.dumps(
 )
 
 
-class DummyView(object):
+class DummyView:
     pass

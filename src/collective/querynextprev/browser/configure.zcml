@@ -2,7 +2,8 @@
     xmlns="http://namespaces.zope.org/zope"
     xmlns:browser="http://namespaces.zope.org/browser"
     xmlns:plone="http://namespaces.plone.org/plone"
-    i18n_domain="collective.querynextprev">
+    i18n_domain="collective.querynextprev"
+    >
 
   <!-- Publish static files -->
   <browser:resourceDirectory
@@ -11,14 +12,14 @@
       />
 
   <browser:viewlet
+      name="collective.querynextprev.nextprevnavigation"
       for="Products.CMFCore.interfaces.IContentish"
       view="plone.app.layout.globals.interfaces.IViewView"
-      layer="collective.querynextprev.interfaces.ICollectiveQuerynextprevLayer"
-      name="collective.querynextprev.nextprevnavigation"
-      class=".viewlets.NextPrevNavigationViewlet"
       manager="plone.app.layout.viewlets.interfaces.IAboveContentTitle"
-      permission="zope2.View"
+      class=".viewlets.NextPrevNavigationViewlet"
       template="templates/nextprev.pt"
+      permission="zope2.View"
+      layer="collective.querynextprev.interfaces.ICollectiveQuerynextprevLayer"
       />
 
   <browser:page

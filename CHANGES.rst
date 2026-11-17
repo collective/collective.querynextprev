@@ -2,10 +2,19 @@ Changelog
 =========
 
 
-0.7 (unreleased)
-----------------
+1.0.0 (unreleased)
+------------------
 
-- Nothing changed yet.
+- Migrated to Plone 6.2 / Python 3, based on the work started by @laulaz on
+  `python3`: Plone 6.1 / 6.2 support (sessions through collective.beaker),
+  Plone 4 dropped.
+  [laulaz, chris-adam]
+- Added plone.meta configuration (tox, pre-commit, GitHub Actions).
+  [chris-adam]
+- Switched to PEP 420 native namespace packages.
+  [chris-adam]
+- Dropped support for Plone versions below 6.2.
+  [chris-adam]
 
 
 0.6 (2019-09-20)
